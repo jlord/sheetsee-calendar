@@ -1,6 +1,8 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
     <script type="text/javascript" src="js/tabletop.js"></script>
     <script type="text/javascript" src='js/sheetsee.js'></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
@@ -14,12 +16,9 @@
 
   <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
-        var URL = "0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE"
-        Tabletop.init( { key: URL, callback: myData, simpleSheet: true } )
+      var URL = "0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE"
+      Tabletop.init( { key: URL, callback: myData, simpleSheet: true } )
     })
-    function myData(data) {
-        console.log(data)
-    }
   </script>
   </body>
 </html>
