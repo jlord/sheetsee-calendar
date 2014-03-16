@@ -8,12 +8,12 @@ window.myData = function (data) {
     month = monthNames[date.getMonth()]
 
     monthTable = $('<table cellspacing=0 id="month-' + date.getMonth() + '">')
-
     if( months.indexOf(month) < 0 ) {
       months.push(month)
       setDates(monthTable, date)
 
       $('body').append(monthTable)
+      monthTable.before('<h1>' + month + '</h1>')
     }
     $('#' + formattedDate(date)).append('<div class="event"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
 
