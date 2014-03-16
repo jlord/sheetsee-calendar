@@ -7,7 +7,7 @@ window.myData = function (data) {
     date = new Date(event.startdate)
     month = monthNames[date.getMonth()]
 
-    monthTable = $('<table id="month-' + date.getMonth() + '">')
+    monthTable = $('<table cellspacing=0 id="month-' + date.getMonth() + '">')
 
     if( months.indexOf(month) < 0 ) {
       months.push(month)
@@ -15,22 +15,19 @@ window.myData = function (data) {
 
       $('body').append(monthTable)
     }
-    console.log('#' + formattedDate(date))
-    $('#' + formattedDate(date)).append('<br/>event on this day')
+    $('#' + formattedDate(date)).append('<div class="event"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
 
   })
 }
 
 var setDates = function( monthTable, date ) {
-  // month = monthTable.data('month')
   monthTableBody = monthTable.append('<tbody>')
   firstDay       = new Date(date.getFullYear(), date.getMonth(), 1)
   numberOfDays   = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
-  // console.log(days)
   weekDayNumber  = firstDay.getDay()
 
-  monthTableBody.append('<tr class="weekdays"></tr>')
-  weekdaysRow = monthTableBody.find('.weekdays')
+  monthTableBody.append('<tr class="header"></tr>')
+  weekdaysRow = monthTableBody.find('.header')
   doThisManyTimes( 7, function(i) {
     weekdaysRow.append('<td>' + weekdays[i] + '</td>')
   })
@@ -44,7 +41,7 @@ var setDates = function( monthTable, date ) {
   doThisManyTimes( numberOfDays, function(daynumber) {
     thisDay = new Date(date.getFullYear(), date.getMonth(), (daynumber + 1))
     id = formattedDate(thisDay)
-    getFirstEmptyRow(monthTableBody).append('<td id=' + id + '>'+ (daynumber + 1) +'</td>')
+    getFirstEmptyRow(monthTableBody).append('<td id=' + id + '><div class=day>'+ (daynumber + 1) +'</div></td>')
   })
 
   // Add empties
