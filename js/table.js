@@ -4,6 +4,7 @@ function generateCalendar (eventData) {
   months = []
 
   $.each(eventData, function(i, event){
+    today          = new Date()
     eventStartDate = new Date(event.startdate)
     eventMonthName = monthNames[eventStartDate.getMonth()]
 
@@ -12,9 +13,13 @@ function generateCalendar (eventData) {
       months.push(eventMonthName)
       generateMonthTable(eventStartDate)
     }
+
+    // Append event to the date
     $('#' + formattedDate(eventStartDate)).append('<div class="event"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
 
   })
+  
+  $('#' + formattedDate(today)).addClass('today')
 }
 
 function generateMonthTable( date ) {

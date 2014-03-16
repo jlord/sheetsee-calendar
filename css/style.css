@@ -38,6 +38,11 @@ td {
   border-bottom: 1px solid #f0f0f0;
 }
 
+.empty {
+  background: repeating-linear-gradient(0, #eee 0, #eee 1px, white 1px, white 5px);
+  background-size: 1px 5px;
+}
+
 .event {
   padding: 3px;
 }
@@ -46,4 +51,18 @@ td {
   font-weight: bold;
   padding: 6px 10px;
   margin-bottom: 5px;
+  position: relative;
+}
+
+.today .day:before {
+  display: block;
+  content: "";
+  width: 24px; height: 24px;
+  border: 1px solid #47CCFC;
+  border-radius: 24px;
+
+  position: absolute;
+  left: 50%;
+  margin-left: -13px;
+  top: 0;
 }
