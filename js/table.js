@@ -1,9 +1,9 @@
-window.myData = function (data) {
+function generateTable (eventData) {
   monthNames = ["Jan", "Feb", "Mar", "Apr", "Aug", "Sept", "Oct", "Nov", "Dec"]
   weekdays   = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
   months = []
 
-  $.each(data, function(i, event){
+  $.each(eventData, function(i, event){
     date = new Date(event.startdate)
     month = monthNames[date.getMonth()]
 
@@ -20,7 +20,7 @@ window.myData = function (data) {
   })
 }
 
-var setDates = function( monthTable, date ) {
+function setDates( monthTable, date ) {
   monthTableBody = monthTable.append('<tbody>')
   firstDay       = new Date(date.getFullYear(), date.getMonth(), 1)
   numberOfDays   = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
@@ -55,13 +55,13 @@ var setDates = function( monthTable, date ) {
 
 }
 
-var doThisManyTimes = function( times, callback ) {
+function doThisManyTimes( times, callback ) {
   for( var i=0; i < times; i++ ){
     callback(i)
   }
 }
 
-var getFirstEmptyRow = function( table ) {
+function getFirstEmptyRow( table ) {
   row = table.find('tr.days').filter(function(i, thisRow) {
     return ($(thisRow).find('td').length) < 7
   })
@@ -72,6 +72,6 @@ var getFirstEmptyRow = function( table ) {
   return row
 }
 
-var formattedDate = function( date ) {
+function formattedDate( date ) {
   return monthNames[date.getMonth()] + '-' + date.getDate()
 }
