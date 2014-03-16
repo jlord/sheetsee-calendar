@@ -1,1 +1,17 @@
 /* #noparents */
+
+body {
+  font-size: 12px;
+  font-family: monospace;
+  text-align: center;
+}
+td {
+  padding: 10px;
+}
+.days td {
+  border: 1px solid #e0e0e0;
+}
+.empty {
+  background-color: #e0e0e0;
+  border-color: transparent;
+}
