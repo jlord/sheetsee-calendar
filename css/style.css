@@ -23,8 +23,13 @@ h2 { font-size: 30px; }
   display: inline-block;
   border: 0;
   text-transform: uppercase;
-  background: #ccf4ff;
   margin: 0 10px;
+  border: 2px solid #ccf4ff;
+}
+
+.month-menuitem.active {
+  background: #ccf4ff;
+  color: #000;
 }
 
 a {

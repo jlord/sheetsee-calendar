@@ -24,6 +24,7 @@ function addMonthMenu() {
   $(document).on('click', '.month-menuitem', function(e) {
     $('[data-month]').hide()
     $('[data-month="' + $(this).data('target') + '"]').show()
+    $(this).addClass('active').siblings().removeClass('active')
     e.preventDefault()
   })
 
