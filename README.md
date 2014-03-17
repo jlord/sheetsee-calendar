@@ -32,7 +32,7 @@ Your dates should be in the `mm/dd/yyyy` format. If your day is multiple days, u
 
 In order to fetch your spreadsheet's data you'll need to click File > Publish to the Web > Start Publishing. This just means when asked for the data in the spreadsheet, Google returns it.
 
-![publish](https://raw.github.com/jllord/sheetsee-cache/master/img/key.png)
+![publish](publish.png)
 
 ### 3. Fork this repository
 
@@ -67,5 +67,5 @@ In a few minutes you'll be able to visit your site at: yourgithubname.github.io/
 
 Included in this repository is a stylesheet for the calendar. You can keep the style as is or make it your own! Classes are like so:
 
-1[css](https://f.cloud.github.com/assets/1153134/2432168/818021fc-ad57-11e3-8ff8-8b483afc2720.png)
+![css](https://f.cloud.github.com/assets/1153134/2432168/818021fc-ad57-11e3-8ff8-8b483afc2720.png)
 
