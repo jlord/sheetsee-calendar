@@ -5,13 +5,16 @@ body {
   font-size: 12px;
   font-family: 'Libre Baskerville', 'Baskerville', Georgia, serif;
   text-align: center;
+  padding: 20px 0 50px;
 }
+
+* { -webkit-box-sizing: border-box; }
 
 .month {
-  margin: auto;
+  margin: 0 auto 100px;
 }
 
-h1 { font-size: 40px; }
+h1 { font-size: 40px; border-bottom: 1px solid #999; display: inline-block; }
 h2 { font-size: 30px; }
 
 a {
@@ -47,7 +50,10 @@ td {
 }
 
 .event {
+  white-space: nowrap;
   padding: 3px;
+  height: 23px;
+  margin-bottom: 1px;
 }
 
 .day {
@@ -58,14 +64,28 @@ td {
 }
 
 .today .day:before {
+  z-index: -1;
   display: block;
   content: "";
   width: 24px; height: 24px;
-  border: 1px solid #47CCFC;
+  background: #36FFA3;
   border-radius: 24px;
-
   position: absolute;
   left: 50%;
-  margin-left: -13px;
+  margin-left: -12px;
   top: 0;
 }
+
+.following-days a { font-size: 0; }
+
+.multi-days {
+  background: #f9f9f9;
+  margin-left: -2px;
+  margin-right: -2px;
+  border-bottom: 2px #CCF4FF solid;
+}
+
+.multi-days a { border: 0; }
+.multi-days a:hover { color: #000; }
+
+.no-event { color: #aaa; }
