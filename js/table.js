@@ -11,6 +11,22 @@ function generateCalendar (eventData) {
 
   // Highlight today
   $('#' + formattedDate(today)).removeClass('no-event').addClass('today')
+  addMonthMenu()
+}
+
+function addMonthMenu() {
+  $('#calendar-goes-here').prepend('<div id="cal-controls">')
+  $('.month-table').each(function(_, table) {
+    month = $(table).data('month')
+    $('#cal-controls').append('<a class="month-menuitem" data-target="' + month + '" href="#' + month + '">' + month + '</a>')
+  })
+
+  $(document).on('click', '.month-menuitem', function() {
+    $('[data-month]').hide()
+    $('[data-month="' + $(this).data('target') + '"]').show()
+  })
+
+  $('[data-target]').first().click()
 }
 
 function appendEvent( event ) {
@@ -61,15 +77,15 @@ function generateAllTheMonths( eventData ) {
 }
 
 function generateMonthTable( date ) {
-  monthTable     = $('<table cellspacing=0 class=month id="month-' + date.getMonth() + '">')
+  eventMonthName = monthNames[date.getMonth()]
+  monthTable     = $('<table cellspacing=0 class="month-table" data-month="' + eventMonthName + '" id="month-' + date.getMonth() + '"></table>')
   monthTableBody = monthTable.append('<tbody>')
   firstDay       = new Date(date.getFullYear(), date.getMonth(), 1)
   numberOfDays   = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
-  eventMonthName = monthNames[date.getMonth()]
   weekDayNumber  = firstDay.getDay()
 
-  $('body').append(monthTable)
-  monthTable.before('<h2>' + eventMonthName + '</h2>')
+  $('#calendar-goes-here').append(monthTable)
+  monthTable.before('<h2 data-month="' + eventMonthName + '">' + eventMonthName + '</h2>')
 
   // Add month calendar header
   monthTableBody.append('<tr class="header"></tr>')
