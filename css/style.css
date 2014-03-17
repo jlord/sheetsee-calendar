@@ -7,9 +7,12 @@ body {
   text-align: center;
 }
 
-table {
+.month {
   margin: auto;
 }
+
+h1 { font-size: 40px; }
+h2 { font-size: 30px; }
 
 a {
   color: #333333;

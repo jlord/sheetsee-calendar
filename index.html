@@ -8,19 +8,16 @@
     <script type="text/javascript" src='js/sheetsee.js'></script>
     <script type="text/javascript" src='js/table.js'></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script type="text/javascript">
+      document.addEventListener('DOMContentLoaded', function() {
+        var URL = "0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE"
+        Tabletop.init( { key: URL, callback: generateCalendar, simpleSheet: true } )
+      })
+    </script>
   </head>
   <body>
-  <div id="placeholder"></div>
 
-  <script id="placeholder" type="text/html">
-    // template if you so desire!
-  </script>
+  <h1>NodeSchool</h1>
 
-  <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-      var URL = "0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE"
-      Tabletop.init( { key: URL, callback: generateCalendar, simpleSheet: true } )
-    })
-  </script>
   </body>
 </html>

@@ -18,19 +18,19 @@ function generateCalendar (eventData) {
     $('#' + formattedDate(eventStartDate)).append('<div class="event"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
 
   })
-  
+
   $('#' + formattedDate(today)).addClass('today')
 }
 
 function generateMonthTable( date ) {
-  monthTable     = $('<table cellspacing=0 id="month-' + date.getMonth() + '">')
+  monthTable     = $('<table cellspacing=0 class=month id="month-' + date.getMonth() + '">')
   monthTableBody = monthTable.append('<tbody>')
   firstDay       = new Date(date.getFullYear(), date.getMonth(), 1)
   numberOfDays   = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
   weekDayNumber  = firstDay.getDay()
 
   $('body').append(monthTable)
-  monthTable.before('<h1>' + eventMonthName + '</h1>')
+  monthTable.before('<h2>' + eventMonthName + '</h2>')
 
   // Add month calendar header
   monthTableBody.append('<tr class="header"></tr>')
