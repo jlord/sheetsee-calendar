@@ -1,46 +1,49 @@
 function generateCalendar (eventData) {
   monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
   weekdays   = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+  today      = new Date()
   months = []
   generateAllTheMonths(eventData)
 
   $.each(eventData, function(i, event){
-    today          = new Date()
-    eventStartDate = new Date(event.startdate)
-    eventEndDate   = new Date(event.enddate)
-
-    // Append event to the date
-    eventElement = $('<div class="event"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
-
-    if( eventEndDate.getDate() ) {
-      date         = eventStartDate
-      spacerNumber = $('#' + formattedDate(eventStartDate)).find('.event').length
-      eventElement.addClass('multi-days')
-
-      while( eventEndDate > date ) {
-        // If reached end of month, go to first day of the next month
-        // Else go to the next day
-        if(date == new Date(date.getFullYear(), date.getMonth() + 1, 0)) {
-          date == new Date(date.getFullYear(), date.getMonth() + 1, 1)
-        } else {
-          date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1 )
-        }
-
-        dateElement = $('#' + formattedDate(date))
-        steps = dateElement.find('.event').length
-        loopForTimes( spacerNumber - steps, function() {
-          dateElement.append('<div class="event spacer">&nbsp;</div>')
-        })
-
-        dateElement.removeClass('no-event').append('<div class="event multi-days following-days" title="' + event.name + '"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
-      }
-    }
-
-    $('#' + formattedDate(eventStartDate)).removeClass('no-event').append(eventElement)
-
+    appendEvent(event)
   })
 
   $('#' + formattedDate(today)).removeClass('no-event').addClass('today')
+}
+
+function appendEvent( event ) {
+  eventStartDate = new Date(event.startdate)
+  eventEndDate   = new Date(event.enddate)
+  eventElement   = $('<div class="event"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
+
+  // Handle multi-days
+  if( eventEndDate.getDate() ) {
+    date         = eventStartDate
+    spacerNumber = $('#' + formattedDate(eventStartDate)).find('.event').length
+    eventElement.addClass('multi-days')
+
+    while( eventEndDate > date ) {
+      // If reached end of month, go to first day of the next month
+      // Else go to the next day
+      if(date == new Date(date.getFullYear(), date.getMonth() + 1, 0)) {
+        date == new Date(date.getFullYear(), date.getMonth() + 1, 1)
+      } else {
+        date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1 )
+      }
+
+      // Add spacer to line up the event
+      dateElement = $('#' + formattedDate(date))
+      steps = dateElement.find('.event').length
+      loopForTimes( spacerNumber - steps, function() {
+        dateElement.append('<div class="event spacer">&nbsp;</div>')
+      })
+
+      dateElement.removeClass('no-event').append('<div class="event multi-days following-days" title="' + event.name + '"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
+    }
+  }
+
+  $('#' + formattedDate(eventStartDate)).removeClass('no-event').append(eventElement)
 }
 
 function generateAllTheMonths( eventData ) {
