@@ -9,6 +9,7 @@ function generateCalendar (eventData) {
     appendEvent(event)
   })
 
+  // Highlight today
   $('#' + formattedDate(today)).removeClass('no-event').addClass('today')
 }
 
