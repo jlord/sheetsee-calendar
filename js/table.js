@@ -32,7 +32,7 @@ function generateCalendar (eventData) {
           dateElement.append('<div class="event spacer">&nbsp;</div>')
         })
 
-        dateElement.removeClass('no-event').append('<div class="event multi-days following-days"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
+        dateElement.removeClass('no-event').append('<div class="event multi-days following-days" title="' + event.name + '"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
       }
     }
 
