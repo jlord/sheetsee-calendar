@@ -21,9 +21,10 @@ function addMonthMenu() {
     $('#cal-controls').append('<a class="month-menuitem" data-target="' + month + '" href="#' + month + '">' + month + '</a>')
   })
 
-  $(document).on('click', '.month-menuitem', function() {
+  $(document).on('click', '.month-menuitem', function(e) {
     $('[data-month]').hide()
     $('[data-month="' + $(this).data('target') + '"]').show()
+    e.preventDefault()
   })
 
   $('[data-target]').first().click()
