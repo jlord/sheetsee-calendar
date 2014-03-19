@@ -24,15 +24,15 @@
       Tabletop.init( { key: URL, callback: makeThings, simpleSheet: true } )
 
       function makeThings(data) {
+        // build the calendar
         generateCalendar(data)
-
+        // add hexcolor to color map markers
         data = addHexcolor(data, "#ccf4ff")
-
+        // make map
         var optionsJSON = ["name", "tickets", "startdate"]
-        // var template = "<a href='{{tickets}}' target='_blank'>{{date}},{{name}}</a>"
-        var template = "{{tickets}}"
+        var template = "<p>{{startdate}} <a href='{{tickets}}'"
+          + " target='_blank'>{{name}}</a><p>"
         var geoJSON = Sheetsee.createGeoJSON(data, optionsJSON)
-        console.log(geoJSON)
         var map = Sheetsee.loadMap("map")
         Sheetsee.addTileLayer(map, 'examples.map-9ijuk24y')
         var markerLayer = Sheetsee.addMarkerLayer(geoJSON, map, template)
