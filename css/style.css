@@ -122,3 +122,33 @@ td {
 .multi-days a:hover { color: #000; }
 
 .no-event { color: #aaa; }
+
+/* Map */
+
+#map { 
+  margin: 40px 100px;
+  height: 350px;
+  background-color: #777;
+}
+
+.leaflet-popup-content {
+  white-space: nowrap;
+  padding: 3px;
+  height: 23px;
+  margin-bottom: 1px;
+  color: #333333;
+  font-size: 12px;
+  font-family: 'Libre Baskerville', 'Baskerville', Georgia, serif;
+  text-align: center;
+}
+
+.leaflet-popup-content a {
+  color: #333333;
+  text-decoration: none;
+  padding-bottom: 0px;
+  border-bottom: 2px #CCF4FF solid;
+}
+
+.leaflet-popup-content a:hover {
+  color: #47CCFC;
+}

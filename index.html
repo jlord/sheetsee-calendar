@@ -8,17 +8,43 @@
     <script type="text/javascript" src='js/sheetsee.js'></script>
     <script type="text/javascript" src='js/table.js'></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <script type="text/javascript">
-      document.addEventListener('DOMContentLoaded', function() {
-        var URL = "0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE"
-        Tabletop.init( { key: URL, callback: generateCalendar, simpleSheet: true } )
-      })
-    </script>
+    <link rel="stylesheet" type="text/css" href="css/mapbox.css">
   </head>
   <body>
 
   <h1>NodeSchool Events</h1>
+  <div id="map"></div>
   <div id="calendar-goes-here"></div>
+  <small>Add events to this <a href="https://docs.google.com/a/github.com/spreadsheet/ccc?key=0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE#gid=0&output=json" target="_blank">spreadsheet</a>.</small>
 
   </body>
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+      var URL = "0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE"
+      Tabletop.init( { key: URL, callback: makeThings, simpleSheet: true } )
+
+      function makeThings(data) {
+        generateCalendar(data)
+
+        data = addHexcolor(data, "#ccf4ff")
+
+        var optionsJSON = ["name", "tickets", "startdate"]
+        // var template = "<a href='{{tickets}}' target='_blank'>{{date}},{{name}}</a>"
+        var template = "{{tickets}}"
+        var geoJSON = Sheetsee.createGeoJSON(data, optionsJSON)
+        console.log(geoJSON)
+        var map = Sheetsee.loadMap("map")
+        Sheetsee.addTileLayer(map, 'examples.map-9ijuk24y')
+        var markerLayer = Sheetsee.addMarkerLayer(geoJSON, map, template)
+      }
+    })
+
+    function addHexcolor(data, color) {
+      data.forEach(function(row) {
+        row.hexcolor = color
+      })
+      return data
+    }
+
+  </script>
 </html>
