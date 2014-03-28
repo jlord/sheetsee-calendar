@@ -28,7 +28,13 @@ function addMonthMenu() {
     e.preventDefault()
   })
 
-  $('[data-target]').first().click()
+  // Get current month and click it
+  currentMonth = $('[data-target=' + monthNames[(new Date()).getMonth()] + ']')
+  if( currentMonth.length ) {
+    currentMonth.click()
+  } else {
+    $('[data-target]').first().click()
+  }
 }
 
 function appendEvent( event ) {
