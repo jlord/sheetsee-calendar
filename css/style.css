@@ -96,6 +96,10 @@ td {
   border: 0 !important;
 }
 
+.past a {
+  opacity: 0.6;
+}
+
 .days td:hover .day:before {
   z-index: -1;
   display: block;
