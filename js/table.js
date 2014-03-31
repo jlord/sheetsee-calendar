@@ -105,7 +105,8 @@ function generateMonthTable( date ) {
   })
 
   // Add empty days from previous month
-  loopForTimes( weekDayNumber - 1, function() {
+  times = weekDayNumber == 0 ? 6 : weekDayNumber - 1
+  loopForTimes( times, function() {
     getFirstAvailableRow(monthTable).append('<td class="empty"></td>')
   })
 
