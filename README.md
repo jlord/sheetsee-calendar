@@ -74,3 +74,8 @@ Included in this repository is a stylesheet for the calendar. You can keep the s
 | Include a Map | Map Documentation |
 | ------------- | ----------------- |
 | ![map](with-map.png) | If you want to include a map, you can do so! There is a map version on the `with-map` [branch](https://github.com/jlord/sheetsee-calendar/tree/with-map). Read `map-doc.md` for [instructions](https://github.com/jlord/sheetsee-calendar/blob/with-map/map-doc.md). |
+
+## Use cases
+
+1. http://calendar.codebar.io/
+2. http://findyourfitwichita.com/bike
