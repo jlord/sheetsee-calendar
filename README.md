@@ -11,7 +11,7 @@ Sheetsee.js is a library that makes it easy to visualze data from a Google Sprea
 
 **Fork-n-go**
 
-This repository contains webfiles on a branch named `gh-pages`, which means GitHub hosts them for free at: [jlord.github.io/sheetsee-calendar](jlord.github.io/sheetsee-calendar). When you fork the project to your account, you too can have a hosted site -- easy peasy!
+This repository contains webfiles on a branch named `gh-pages`, which means GitHub hosts them for free at: [jlord.github.io/sheetsee-calendar](http://jlord.github.io/sheetsee-calendar). When you fork the project to your account, you too can have a hosted site -- easy peasy!
 
 ## Set Up
 
