@@ -73,6 +73,9 @@ td {
   padding: 3px;
   height: 23px;
   margin-bottom: 1px;
+  max-width: 184px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .day {
@@ -80,6 +83,7 @@ td {
   padding: 6px 10px;
   margin-bottom: 5px;
   position: relative;
+  width: 13%;
 }
 
 .today .day:before {
