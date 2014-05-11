@@ -3,10 +3,12 @@
   <head>
     <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic'>
     <meta charset="utf-8">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+    <script type="text/javascript" src='js/jquery.js'></script>
     <script type="text/javascript" src="js/tabletop1.3.4.js"></script>
     <script type="text/javascript" src='js/sheetsee.js'></script>
     <script type="text/javascript" src='js/table.js'></script>
+    <script type="text/javascript" src='js/eventData.js'></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <!-- Bonus NodeSchool stylesheet option! -->
     <!-- <link rel="stylesheet" type="text/css" href="css/nodeschool.css"> -->
@@ -19,9 +21,10 @@
 
   </body>
     <script type="text/javascript">
-    document.addEventListener('DOMContentLoaded', function() {
-      var URL = "0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE"
-      Tabletop.init( { key: URL, callback: generateCalendar, simpleSheet: true } )
-    })
+    // document.addEventListener('DOMContentLoaded', function() {
+    //   var URL = "0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE"
+    //   Tabletop.init( { key: URL, callback: generateCalendar, simpleSheet: true } )
+    // })
+    generateCalendar(eventData)
   </script>
 </html>
