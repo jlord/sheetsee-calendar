@@ -1,11 +1,12 @@
+var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
+var weekdays   = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+var today  = new Date()
+var months = []
+
 function generateCalendar (eventData) {
-  monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"]
-  weekdays   = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-  today      = new Date()
-  months = []
   generateAllTheMonths(eventData)
 
-  $.each(eventData, function(i, event){
+  eventData.forEach(function (event) {
     appendEvent(event)
   })
 
@@ -29,7 +30,7 @@ function addMonthMenu() {
   })
 
   // Get current month and click it
-  currentMonth = $('[data-target=' + monthNames[(new Date()).getMonth()] + ']')
+  var currentMonth = $('[data-target=' + monthNames[(new Date()).getMonth()] + ']')
   if( currentMonth.length ) {
     currentMonth.click()
   } else {
@@ -38,28 +39,28 @@ function addMonthMenu() {
 }
 
 function appendEvent( event ) {
-  eventStartDate = new Date(event.startdate)
-  eventEndDate   = new Date(event.enddate)
-  eventElement   = $('<div class="event"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
+  var eventStartDate = new Date(event.startdate)
+  var eventEndDate   = new Date(event.enddate)
+  var eventElement   = $('<div class="event"><a target="_blank" href="' + event.tickets + '">' + event.name + '</a></div>')
 
   // Handle multi-days
-  if( eventEndDate.getDate() ) {
-    date         = eventStartDate
-    spacerNumber = $('#' + formattedDate(eventStartDate)).find('.event').length
+  if ( eventEndDate.getDate() ) {
+    var date         = eventStartDate
+    var spacerNumber = $('#' + formattedDate(eventStartDate)).find('.event').length
     eventElement.addClass('multi-days')
 
-    while( eventEndDate > date ) {
+    while ( eventEndDate > date ) {
       // If reached end of month, go to first day of the next month
       // Else go to the next day
-      if(date == new Date(date.getFullYear(), date.getMonth() + 1, 0)) {
+      if (date == new Date(date.getFullYear(), date.getMonth() + 1, 0)) {
         date == new Date(date.getFullYear(), date.getMonth() + 1, 1)
       } else {
         date = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1 )
       }
 
       // Add spacer to line up the event
-      dateElement = $('#' + formattedDate(date))
-      steps = dateElement.find('.event').length
+      var dateElement = $('#' + formattedDate(date))
+      var steps = dateElement.find('.event').length
       loopForTimes( spacerNumber - steps, function() {
         dateElement.append('<div class="event spacer">&nbsp;</div>')
       })
@@ -72,12 +73,17 @@ function appendEvent( event ) {
 }
 
 function generateAllTheMonths( eventData ) {
-  dates  = eventData.map(function(e) { return [e.startdate, e.enddate] })
-  dates  = [].concat.apply([], dates).filter(function(n) { return n })
-  months = []
-  $.each( dates, function(_, date) {
+  var dates = []
+  var months = []
+
+  eventData.forEach(function(event) {
+    if (event.startdate) dates.push(event.startdate)
+    if (event.enddate) dates.push(event.enddate)
+  })
+
+  dates.forEach(function (date) {
     date = new Date(date)
-    if( months.indexOf(date.getMonth()) < 0 ) {
+    if(months.indexOf(date.getMonth()) < 0) {
       months.push(date.getMonth())
       generateMonthTable(date)
     }
@@ -85,49 +91,48 @@ function generateAllTheMonths( eventData ) {
 }
 
 function generateMonthTable( date ) {
-  eventMonthName = monthNames[date.getMonth()]
-  monthTable     = $('<table cellspacing=0 class="month-table" data-month="' + eventMonthName + '" id="month-' + date.getMonth() + '"></table>')
-  monthTableBody = monthTable.append('<tbody>')
-  today          = new Date()
-  endOfToday     = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 00, 00, 00)
-  firstDay       = new Date(date.getFullYear(), date.getMonth(), 1)
-  numberOfDays   = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
-  weekDayNumber  = firstDay.getDay()
+  var eventMonthName = monthNames[date.getMonth()]
+  var monthTable     = $('<table cellspacing=0 class="month-table" data-month="' + eventMonthName + '" id="month-' + date.getMonth() + '"></table>')
+  var monthTableBody = monthTable.append('<tbody>')
+  // var today          = new Date()
+  var endOfToday     = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 00, 00, 00)
+  var firstDay       = new Date(date.getFullYear(), date.getMonth(), 1)
+  var numberOfDays   = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
+  var weekDayNumber  = firstDay.getDay()
 
   $('#calendar-goes-here').append(monthTable)
   monthTable.before('<h2 data-month="' + eventMonthName + '">' + eventMonthName + ' ' + date.getFullYear() + '</h2>')
 
   // Add month calendar header
   monthTableBody.append('<tr class="header"></tr>')
-  headerRow = monthTableBody.find('.header')
+  var headerRow = monthTableBody.find('.header')
   loopForTimes( 7, function(i) {
     headerRow.append('<td>' + weekdays[i] + '</td>')
   })
 
   // Add empty days from previous month
-  times = weekDayNumber == 0 ? 6 : weekDayNumber - 1
+  var times = weekDayNumber == 0 ? 6 : weekDayNumber - 1
   loopForTimes( times, function() {
     getFirstAvailableRow(monthTable).append('<td class="empty"></td>')
   })
 
   // Filling the month with days
   loopForTimes( numberOfDays, function(daynumber) {
-    thisDay = new Date(date.getFullYear(), date.getMonth(), (daynumber + 1))
-    id = formattedDate(thisDay)
-    pastClass = endOfToday > thisDay ? "past" : ""
+    var thisDay = new Date(date.getFullYear(), date.getMonth(), (daynumber + 1))
+    var id = formattedDate(thisDay)
+    var pastClass = endOfToday > thisDay ? "past" : ""
     getFirstAvailableRow(monthTableBody).append('<td class="no-event ' + pastClass + '" id=' + id + '><div class=day>'+ (daynumber + 1) +'</div></td>')
   })
 
   // Add empty days from next month
-  lastRow = monthTable.find('tr:last')
-  cellsInLastRow = lastRow.find('td').length
+  var lastRow = monthTable.find('tr:last')
+  var cellsInLastRow = lastRow.find('td').length
   // Check if this is necessary
-  if( cellsInLastRow < 7 ) {
+  if ( cellsInLastRow < 7 ) {
     loopForTimes( (7 - cellsInLastRow), function() {
       lastRow.append('<td class="empty"></td>')
     })
   }
-
 }
 
 // Because I don't like ot write for()
@@ -139,13 +144,13 @@ function loopForTimes( times, callback ) {
 
 // This is handy: getting the first row with available cell space
 function getFirstAvailableRow( table ) {
-  row = table.find('tr.days').filter(function(i, thisRow) {
+  var row = table.find('tr.days').filter(function(i, thisRow) {
     return ($(thisRow).find('td').length) < 7
   })
   // If no available row, create a new one
   if( row.length == 0 ) {
     table.append('<tr class=days>')
-    row = table.find('tr').last()
+    var row = table.find('tr').last()
   }
   return row
 }
