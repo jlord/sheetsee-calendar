@@ -3,29 +3,48 @@
   <head>
     <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic'>
     <meta charset="utf-8">
-    <!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
-    <script type="text/javascript" src='js/jquery.js'></script>
-    <script type="text/javascript" src="js/tabletop1.3.4.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="js/tabletop.js"></script>
     <script type="text/javascript" src='js/sheetsee.js'></script>
     <script type="text/javascript" src='js/table.js'></script>
-    <script type="text/javascript" src='js/eventData.js'></script>
-    <script type="text/javascript" src='js/leaflet.markercluster.js'></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <!-- Bonus NodeSchool stylesheet option! -->
-    <!-- <link rel="stylesheet" type="text/css" href="css/nodeschool.css"> -->
+    <link rel="stylesheet" type="text/css" href="css/mapbox.css">
   </head>
   <body>
 
   <h1>NodeSchool Events</h1>
+  <div id="map"></div>
   <div id="calendar-goes-here"></div>
   <small>Add events to this <a href="https://docs.google.com/a/github.com/spreadsheet/ccc?key=0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE#gid=0&output=json" target="_blank">spreadsheet</a>. Visit the GitHub <a href="http://www.github.com/jlord/sheetsee-calendar">repository</a>.</small>
 
   </body>
     <script type="text/javascript">
-    // document.addEventListener('DOMContentLoaded', function() {
-    //   var URL = "0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE"
-    //   Tabletop.init( { key: URL, callback: generateCalendar, simpleSheet: true } )
-    // })
-    generateCalendar(eventData)
+    document.addEventListener('DOMContentLoaded', function() {
+      var URL = "0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE"
+      Tabletop.init( { key: URL, callback: makeThings, simpleSheet: true } )
+
+      function makeThings(data) {
+        // build the calendar
+        generateCalendar(data)
+        // add hexcolor to color map markers
+        data = addHexcolor(data, "#ccf4ff")
+        // make map
+        var optionsJSON = ["name", "tickets", "startdate"]
+        var template = "<p>{{startdate}} <a href='{{tickets}}'"
+          + " target='_blank'>{{name}}</a><p>"
+        var geoJSON = Sheetsee.createGeoJSON(data, optionsJSON)
+        var map = Sheetsee.loadMap("map")
+        Sheetsee.addTileLayer(map, 'examples.map-9ijuk24y')
+        var markerLayer = Sheetsee.addMarkerLayer(geoJSON, map, template)
+      }
+    })
+
+    function addHexcolor(data, color) {
+      data.forEach(function(row) {
+        row.hexcolor = color
+      })
+      return data
+    }
+
   </script>
 </html>
