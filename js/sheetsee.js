@@ -1,857 +1,4 @@
 ;(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-if (typeof window.Sheetsee === 'undefined') window.Sheetsee = {}; window.Sheetsee = require('sheetsee-core'); var extend = require('lodash.assign'); extend(window.Sheetsee, require('sheetsee-maps'), require('sheetsee-tables'), require('sheetsee-charts')); module.exports = Sheetsee;
-},{"lodash.assign":2,"sheetsee-charts":27,"sheetsee-core":30,"sheetsee-maps":32,"sheetsee-tables":60}],2:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var baseCreateCallback = require('lodash._basecreatecallback'),
-    keys = require('lodash.keys'),
-    objectTypes = require('lodash._objecttypes');
-
-/**
- * Assigns own enumerable properties of source object(s) to the destination
- * object. Subsequent sources will overwrite property assignments of previous
- * sources. If a callback is provided it will be executed to produce the
- * assigned values. The callback is bound to `thisArg` and invoked with two
- * arguments; (objectValue, sourceValue).
- *
- * @static
- * @memberOf _
- * @type Function
- * @alias extend
- * @category Objects
- * @param {Object} object The destination object.
- * @param {...Object} [source] The source objects.
- * @param {Function} [callback] The function to customize assigning values.
- * @param {*} [thisArg] The `this` binding of `callback`.
- * @returns {Object} Returns the destination object.
- * @example
- *
- * _.assign({ 'name': 'moe' }, { 'age': 40 });
- * // => { 'name': 'moe', 'age': 40 }
- *
- * var defaults = _.partialRight(_.assign, function(a, b) {
- *   return typeof a == 'undefined' ? b : a;
- * });
- *
- * var food = { 'name': 'apple' };
- * defaults(food, { 'name': 'banana', 'type': 'fruit' });
- * // => { 'name': 'apple', 'type': 'fruit' }
- */
-var assign = function(object, source, guard) {
-  var index, iterable = object, result = iterable;
-  if (!iterable) return result;
-  var args = arguments,
-      argsIndex = 0,
-      argsLength = typeof guard == 'number' ? 2 : args.length;
-  if (argsLength > 3 && typeof args[argsLength - 2] == 'function') {
-    var callback = baseCreateCallback(args[--argsLength - 1], args[argsLength--], 2);
-  } else if (argsLength > 2 && typeof args[argsLength - 1] == 'function') {
-    callback = args[--argsLength];
-  }
-  while (++argsIndex < argsLength) {
-    iterable = args[argsIndex];
-    if (iterable && objectTypes[typeof iterable]) {
-    var ownIndex = -1,
-        ownProps = objectTypes[typeof iterable] && keys(iterable),
-        length = ownProps ? ownProps.length : 0;
-
-    while (++ownIndex < length) {
-      index = ownProps[ownIndex];
-      result[index] = callback ? callback(result[index], iterable[index]) : iterable[index];
-    }
-    }
-  }
-  return result
-};
-
-module.exports = assign;
-
-},{"lodash._basecreatecallback":3,"lodash._objecttypes":22,"lodash.keys":23}],3:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var bind = require('lodash.bind'),
-    identity = require('lodash.identity'),
-    setBindData = require('lodash._setbinddata'),
-    support = require('lodash.support');
-
-/** Used to detected named functions */
-var reFuncName = /^function[ \n\r\t]+\w/;
-
-/** Used to detect functions containing a `this` reference */
-var reThis = /\bthis\b/;
-
-/** Native method shortcuts */
-var fnToString = Function.prototype.toString;
-
-/**
- * The base implementation of `_.createCallback` without support for creating
- * "_.pluck" or "_.where" style callbacks.
- *
- * @private
- * @param {*} [func=identity] The value to convert to a callback.
- * @param {*} [thisArg] The `this` binding of the created callback.
- * @param {number} [argCount] The number of arguments the callback accepts.
- * @returns {Function} Returns a callback function.
- */
-function baseCreateCallback(func, thisArg, argCount) {
-  if (typeof func != 'function') {
-    return identity;
-  }
-  // exit early if there is no `thisArg`
-  if (typeof thisArg == 'undefined') {
-    return func;
-  }
-  var bindData = func.__bindData__ || (support.funcNames && !func.name);
-  if (typeof bindData == 'undefined') {
-    var source = reThis && fnToString.call(func);
-    if (!support.funcNames && source && !reFuncName.test(source)) {
-      bindData = true;
-    }
-    if (support.funcNames || !bindData) {
-      // checks if `func` references the `this` keyword and stores the result
-      bindData = !support.funcDecomp || reThis.test(source);
-      setBindData(func, bindData);
-    }
-  }
-  // exit early if there are no `this` references or `func` is bound
-  if (bindData !== true && (bindData && bindData[1] & 1)) {
-    return func;
-  }
-  switch (argCount) {
-    case 1: return function(value) {
-      return func.call(thisArg, value);
-    };
-    case 2: return function(a, b) {
-      return func.call(thisArg, a, b);
-    };
-    case 3: return function(value, index, collection) {
-      return func.call(thisArg, value, index, collection);
-    };
-    case 4: return function(accumulator, value, index, collection) {
-      return func.call(thisArg, accumulator, value, index, collection);
-    };
-  }
-  return bind(func, thisArg);
-}
-
-module.exports = baseCreateCallback;
-
-},{"lodash._setbinddata":4,"lodash.bind":12,"lodash.identity":19,"lodash.support":20}],4:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var getObject = require('lodash._getobject'),
-    noop = require('lodash._noop'),
-    reNative = require('lodash._renative'),
-    releaseObject = require('lodash._releaseobject');
-
-/** Used for native method references */
-var objectProto = Object.prototype;
-
-var defineProperty = (function() {
-  try {
-    var o = {},
-        func = reNative.test(func = Object.defineProperty) && func,
-        result = func(o, o, o) && func;
-  } catch(e) { }
-  return result;
-}());
-
-/**
- * Sets `this` binding data on a given function.
- *
- * @private
- * @param {Function} func The function to set data on.
- * @param {*} value The value to set.
- */
-var setBindData = !defineProperty ? noop : function(func, value) {
-  var descriptor = getObject();
-  descriptor.value = value;
-  defineProperty(func, '__bindData__', descriptor);
-  releaseObject(descriptor);
-};
-
-module.exports = setBindData;
-
-},{"lodash._getobject":5,"lodash._noop":7,"lodash._releaseobject":8,"lodash._renative":11}],5:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var objectPool = require('lodash._objectpool');
-
-/**
- * Gets an object from the object pool or creates a new one if the pool is empty.
- *
- * @private
- * @returns {Object} The object from the pool.
- */
-function getObject() {
-  return objectPool.pop() || {
-    'array': null,
-    'cache': null,
-    'configurable': false,
-    'criteria': null,
-    'enumerable': false,
-    'false': false,
-    'index': 0,
-    'leading': false,
-    'maxWait': 0,
-    'null': false,
-    'number': null,
-    'object': null,
-    'push': null,
-    'string': null,
-    'trailing': false,
-    'true': false,
-    'undefined': false,
-    'value': null,
-    'writable': false
-  };
-}
-
-module.exports = getObject;
-
-},{"lodash._objectpool":6}],6:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-
-/** Used to pool arrays and objects used internally */
-var objectPool = [];
-
-module.exports = objectPool;
-
-},{}],7:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-
-/**
- * A no-operation function.
- *
- * @private
- */
-function noop() {
-  // no operation performed
-}
-
-module.exports = noop;
-
-},{}],8:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var maxPoolSize = require('lodash._maxpoolsize'),
-    objectPool = require('lodash._objectpool');
-
-/**
- * Releases the given object back to the object pool.
- *
- * @private
- * @param {Object} [object] The object to release.
- */
-function releaseObject(object) {
-  var cache = object.cache;
-  if (cache) {
-    releaseObject(cache);
-  }
-  object.array = object.cache = object.criteria = object.object = object.number = object.string = object.value = null;
-  if (objectPool.length < maxPoolSize) {
-    objectPool.push(object);
-  }
-}
-
-module.exports = releaseObject;
-
-},{"lodash._maxpoolsize":9,"lodash._objectpool":10}],9:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-
-/** Used as the max size of the `arrayPool` and `objectPool` */
-var maxPoolSize = 40;
-
-module.exports = maxPoolSize;
-
-},{}],10:[function(require,module,exports){
-module.exports=require(6)
-},{}],11:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-
-/** Used for native method references */
-var objectProto = Object.prototype;
-
-/** Used to detect if a method is native */
-var reNative = RegExp('^' +
-  String(objectProto.valueOf)
-    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    .replace(/valueOf|for [^\]]+/g, '.+?') + '$'
-);
-
-module.exports = reNative;
-
-},{}],12:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var createBound = require('lodash._createbound'),
-    reNative = require('lodash._renative');
-
-/**
- * Used for `Array` method references.
- *
- * Normally `Array.prototype` would suffice, however, using an array literal
- * avoids issues in Narwhal.
- */
-var arrayRef = [];
-
-/* Native method shortcuts for methods with the same name as other `lodash` methods */
-var nativeSlice = arrayRef.slice;
-
-/**
- * Creates a function that, when called, invokes `func` with the `this`
- * binding of `thisArg` and prepends any additional `bind` arguments to those
- * provided to the bound function.
- *
- * @static
- * @memberOf _
- * @category Functions
- * @param {Function} func The function to bind.
- * @param {*} [thisArg] The `this` binding of `func`.
- * @param {...*} [arg] Arguments to be partially applied.
- * @returns {Function} Returns the new bound function.
- * @example
- *
- * var func = function(greeting) {
- *   return greeting + ' ' + this.name;
- * };
- *
- * func = _.bind(func, { 'name': 'moe' }, 'hi');
- * func();
- * // => 'hi moe'
- */
-function bind(func, thisArg) {
-  return arguments.length > 2
-    ? createBound(func, 17, nativeSlice.call(arguments, 2), null, thisArg)
-    : createBound(func, 1, null, null, thisArg);
-}
-
-module.exports = bind;
-
-},{"lodash._createbound":13,"lodash._renative":18}],13:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var createObject = require('lodash._createobject'),
-    isFunction = require('lodash.isfunction'),
-    isObject = require('lodash.isobject'),
-    reNative = require('lodash._renative'),
-    setBindData = require('lodash._setbinddata'),
-    support = require('lodash.support');
-
-/**
- * Used for `Array` method references.
- *
- * Normally `Array.prototype` would suffice, however, using an array literal
- * avoids issues in Narwhal.
- */
-var arrayRef = [];
-
-/** Used for native method references */
-var objectProto = Object.prototype;
-
-/** Native method shortcuts */
-var push = arrayRef.push,
-    toString = objectProto.toString,
-    unshift = arrayRef.unshift;
-
-/* Native method shortcuts for methods with the same name as other `lodash` methods */
-var nativeBind = reNative.test(nativeBind = toString.bind) && nativeBind,
-    nativeSlice = arrayRef.slice;
-
-/**
- * Creates a function that, when called, either curries or invokes `func`
- * with an optional `this` binding and partially applied arguments.
- *
- * @private
- * @param {Function|string} func The function or method name to reference.
- * @param {number} bitmask The bitmask of method flags to compose.
- *  The bitmask may be composed of the following flags:
- *  1 - `_.bind`
- *  2 - `_.bindKey`
- *  4 - `_.curry`
- *  8 - `_.curry` (bound)
- *  16 - `_.partial`
- *  32 - `_.partialRight`
- * @param {Array} [partialArgs] An array of arguments to prepend to those
- *  provided to the new function.
- * @param {Array} [partialRightArgs] An array of arguments to append to those
- *  provided to the new function.
- * @param {*} [thisArg] The `this` binding of `func`.
- * @param {number} [arity] The arity of `func`.
- * @returns {Function} Returns the new bound function.
- */
-function createBound(func, bitmask, partialArgs, partialRightArgs, thisArg, arity) {
-  var isBind = bitmask & 1,
-      isBindKey = bitmask & 2,
-      isCurry = bitmask & 4,
-      isCurryBound = bitmask & 8,
-      isPartial = bitmask & 16,
-      isPartialRight = bitmask & 32,
-      key = func;
-
-  if (!isBindKey && !isFunction(func)) {
-    throw new TypeError;
-  }
-  if (isPartial && !partialArgs.length) {
-    bitmask &= ~16;
-    isPartial = partialArgs = false;
-  }
-  if (isPartialRight && !partialRightArgs.length) {
-    bitmask &= ~32;
-    isPartialRight = partialRightArgs = false;
-  }
-  var bindData = func && func.__bindData__;
-  if (bindData) {
-    if (isBind && !(bindData[1] & 1)) {
-      bindData[4] = thisArg;
-    }
-    if (!isBind && bindData[1] & 1) {
-      bitmask |= 8;
-    }
-    if (isCurry && !(bindData[1] & 4)) {
-      bindData[5] = arity;
-    }
-    if (isPartial) {
-      push.apply(bindData[2] || (bindData[2] = []), partialArgs);
-    }
-    if (isPartialRight) {
-      push.apply(bindData[3] || (bindData[3] = []), partialRightArgs);
-    }
-    bindData[1] |= bitmask;
-    return createBound.apply(null, bindData);
-  }
-  // use `Function#bind` if it exists and is fast
-  // (in V8 `Function#bind` is slower except when partially applied)
-  if (isBind && !(isBindKey || isCurry || isPartialRight) &&
-      (support.fastBind || (nativeBind && isPartial))) {
-    if (isPartial) {
-      var args = [thisArg];
-      push.apply(args, partialArgs);
-    }
-    var bound = isPartial
-      ? nativeBind.apply(func, args)
-      : nativeBind.call(func, thisArg);
-  }
-  else {
-    bound = function() {
-      // `Function#bind` spec
-      // http://es5.github.io/#x15.3.4.5
-      var args = arguments,
-          thisBinding = isBind ? thisArg : this;
-
-      if (isCurry || isPartial || isPartialRight) {
-        args = nativeSlice.call(args);
-        if (isPartial) {
-          unshift.apply(args, partialArgs);
-        }
-        if (isPartialRight) {
-          push.apply(args, partialRightArgs);
-        }
-        if (isCurry && args.length < arity) {
-          bitmask |= 16 & ~32;
-          return createBound(func, (isCurryBound ? bitmask : bitmask & ~3), args, null, thisArg, arity);
-        }
-      }
-      if (isBindKey) {
-        func = thisBinding[key];
-      }
-      if (this instanceof bound) {
-        // ensure `new bound` is an instance of `func`
-        thisBinding = createObject(func.prototype);
-
-        // mimic the constructor's `return` behavior
-        // http://es5.github.io/#x13.2.2
-        var result = func.apply(thisBinding, args);
-        return isObject(result) ? result : thisBinding;
-      }
-      return func.apply(thisBinding, args);
-    };
-  }
-  setBindData(bound, nativeSlice.call(arguments));
-  return bound;
-}
-
-module.exports = createBound;
-
-},{"lodash._createobject":14,"lodash._renative":18,"lodash._setbinddata":4,"lodash.isfunction":16,"lodash.isobject":17,"lodash.support":20}],14:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var isObject = require('lodash.isobject'),
-    noop = require('lodash._noop'),
-    reNative = require('lodash._renative');
-
-/** Used for native method references */
-var objectProto = Object.prototype;
-
-/* Native method shortcuts for methods with the same name as other `lodash` methods */
-var nativeCreate = reNative.test(nativeCreate = Object.create) && nativeCreate;
-
-/**
- * Creates a new object with the specified `prototype`.
- *
- * @private
- * @param {Object} prototype The prototype object.
- * @returns {Object} Returns the new object.
- */
-function createObject(prototype) {
-  return isObject(prototype) ? nativeCreate(prototype) : {};
-}
-
-module.exports = createObject;
-
-},{"lodash._noop":15,"lodash._renative":18,"lodash.isobject":17}],15:[function(require,module,exports){
-module.exports=require(7)
-},{}],16:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-
-/**
- * Checks if `value` is a function.
- *
- * @static
- * @memberOf _
- * @category Objects
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if the `value` is a function, else `false`.
- * @example
- *
- * _.isFunction(_);
- * // => true
- */
-function isFunction(value) {
-  return typeof value == 'function';
-}
-
-module.exports = isFunction;
-
-},{}],17:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var objectTypes = require('lodash._objecttypes');
-
-/**
- * Checks if `value` is the language type of Object.
- * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
- *
- * @static
- * @memberOf _
- * @category Objects
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if the `value` is an object, else `false`.
- * @example
- *
- * _.isObject({});
- * // => true
- *
- * _.isObject([1, 2, 3]);
- * // => true
- *
- * _.isObject(1);
- * // => false
- */
-function isObject(value) {
-  // check if the value is the ECMAScript language type of Object
-  // http://es5.github.io/#x8
-  // and avoid a V8 bug
-  // http://code.google.com/p/v8/issues/detail?id=2291
-  return !!(value && objectTypes[typeof value]);
-}
-
-module.exports = isObject;
-
-},{"lodash._objecttypes":22}],18:[function(require,module,exports){
-module.exports=require(11)
-},{}],19:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-
-/**
- * This method returns the first argument provided to it.
- *
- * @static
- * @memberOf _
- * @category Utilities
- * @param {*} value Any value.
- * @returns {*} Returns `value`.
- * @example
- *
- * var moe = { 'name': 'moe' };
- * moe === _.identity(moe);
- * // => true
- */
-function identity(value) {
-  return value;
-}
-
-module.exports = identity;
-
-},{}],20:[function(require,module,exports){
-var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var reNative = require('lodash._renative');
-
-/** Used to detect functions containing a `this` reference */
-var reThis = /\bthis\b/;
-
-/** Used for native method references */
-var objectProto = Object.prototype;
-
-/** Native method shortcuts */
-var toString = objectProto.toString;
-
-/* Native method shortcuts for methods with the same name as other `lodash` methods */
-var nativeBind = reNative.test(nativeBind = toString.bind) && nativeBind;
-
-/** Detect various environments */
-var isIeOpera = reNative.test(global.attachEvent),
-    isV8 = nativeBind && !/\n|true/.test(nativeBind + isIeOpera);
-
-/**
- * An object used to flag environments features.
- *
- * @static
- * @memberOf _
- * @type Object
- */
-var support = {};
-
-/**
- * Detect if `Function#bind` exists and is inferred to be fast (all but V8).
- *
- * @memberOf _.support
- * @type boolean
- */
-support.fastBind = nativeBind && !isV8;
-
-/**
- * Detect if functions can be decompiled by `Function#toString`
- * (all but PS3 and older Opera mobile browsers & avoided in Windows 8 apps).
- *
- * @memberOf _.support
- * @type boolean
- */
-support.funcDecomp = !reNative.test(global.WinRTError) && reThis.test(function() { return this; });
-
-/**
- * Detect if `Function#name` is supported (all but IE).
- *
- * @memberOf _.support
- * @type boolean
- */
-support.funcNames = typeof Function.name == 'string';
-
-module.exports = support;
-
-},{"lodash._renative":21}],21:[function(require,module,exports){
-module.exports=require(11)
-},{}],22:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-
-/** Used to determine if values are of the language type Object */
-var objectTypes = {
-  'boolean': false,
-  'function': true,
-  'object': true,
-  'number': false,
-  'string': false,
-  'undefined': false
-};
-
-module.exports = objectTypes;
-
-},{}],23:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var isObject = require('lodash.isobject'),
-    reNative = require('lodash._renative'),
-    shimKeys = require('lodash._shimkeys');
-
-/** Used for native method references */
-var objectProto = Object.prototype;
-
-/* Native method shortcuts for methods with the same name as other `lodash` methods */
-var nativeKeys = reNative.test(nativeKeys = Object.keys) && nativeKeys;
-
-/**
- * Creates an array composed of the own enumerable property names of an object.
- *
- * @static
- * @memberOf _
- * @category Objects
- * @param {Object} object The object to inspect.
- * @returns {Array} Returns an array of property names.
- * @example
- *
- * _.keys({ 'one': 1, 'two': 2, 'three': 3 });
- * // => ['one', 'two', 'three'] (property order is not guaranteed across environments)
- */
-var keys = !nativeKeys ? shimKeys : function(object) {
-  if (!isObject(object)) {
-    return [];
-  }
-  return nativeKeys(object);
-};
-
-module.exports = keys;
-
-},{"lodash._renative":24,"lodash._shimkeys":25,"lodash.isobject":26}],24:[function(require,module,exports){
-module.exports=require(11)
-},{}],25:[function(require,module,exports){
-/**
- * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
- * Build: `lodash modularize modern exports="npm" -o ./npm`
- * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
- * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
- * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
- * Available under MIT license <http://lodash.com/license>
- */
-var objectTypes = require('lodash._objecttypes');
-
-/** Used for native method references */
-var objectProto = Object.prototype;
-
-/** Native method shortcuts */
-var hasOwnProperty = objectProto.hasOwnProperty;
-
-/**
- * A fallback implementation of `Object.keys` which produces an array of the
- * given object's own enumerable property names.
- *
- * @private
- * @type Function
- * @param {Object} object The object to inspect.
- * @returns {Array} Returns an array of property names.
- */
-var shimKeys = function(object) {
-  var index, iterable = object, result = [];
-  if (!iterable) return result;
-  if (!(objectTypes[typeof object])) return result;
-    for (index in iterable) {
-      if (hasOwnProperty.call(iterable, index)) {
-        result.push(index);
-      }
-    }
-  return result
-};
-
-module.exports = shimKeys;
-
-},{"lodash._objecttypes":22}],26:[function(require,module,exports){
-module.exports=require(17)
-},{"lodash._objecttypes":22}],27:[function(require,module,exports){
 var d3 = require('d3')
 
 module.exports.d3 = d3
@@ -1176,7 +323,7 @@ var lineData = data.map(function(d) { return d.units })
 }
 
 
-},{"d3":29}],28:[function(require,module,exports){
+},{"d3":3}],2:[function(require,module,exports){
 d3 = function() {
   var d3 = {
     version: "3.2.8"
@@ -9987,12 +9134,12 @@ d3 = function() {
   });
   return d3;
 }();
-},{}],29:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 require("./d3");
 module.exports = d3;
 (function () { delete this.d3; })(); // unset global
 
-},{"./d3":28}],30:[function(require,module,exports){
+},{"./d3":2}],4:[function(require,module,exports){
 var ich = require('icanhaz')
 
 module.exports.ich = ich
@@ -10156,7 +9303,7 @@ module.exports.makeArrayOfObject = function(data) {
   })
 }
 
-},{"icanhaz":31}],31:[function(require,module,exports){
+},{"icanhaz":5}],5:[function(require,module,exports){
 /*!
 ICanHaz.js version 0.10.2 -- by @HenrikJoreteg
 More info at: http://icanhazjs.com
@@ -10710,7 +9857,7 @@ var Mustache = function () {
 })();
 })();
 
-},{}],32:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 var mapbox = require('mapbox.js')
 var ich = require('icanhaz')
 
@@ -10731,13 +9878,12 @@ module.exports.makeupOptionObject = function(lineItem) {
   return options
 }
 
-// for geocoding: http://mapbox.com/tilemill/docs/guides/google-docs/#geocoding
-// create geoJSON from your spreadsheet's coordinates
 module.exports.createGeoJSON = function(data, optionsJSON) {
   var geoJSON = []
   data.forEach(function(lineItem){
-    var hasGeo = false
-    if (lineItem.lat && lineItem.long || lineItem.polygon) hasGeo = true
+    var hasGeo = confirmGeo(lineItem)
+
+    if (hasGeo && !lineItem.lat && !lineItem.long) handleLatLong(lineItem)
     if (lineItem.linestring || lineItem.multipolygon) hasGeo = true
     if (!hasGeo) return
 
@@ -10754,14 +9900,41 @@ module.exports.createGeoJSON = function(data, optionsJSON) {
       var shapeFeature = shapeJSON(lineItem, type, optionObj)
       geoJSON.push(shapeFeature)
     } else {
-      var poitnFeature = pointJSON(lineItem, type, optionObj)
-      geoJSON.push(poitnFeature)
+      var pointFeature = pointJSON(lineItem, type, optionObj)
+      geoJSON.push(pointFeature)
       }
   })
   return geoJSON
 }
 
-module.exports.pointJSON = pointJSON 
+module.exports.confirmGeo = confirmGeo
+function confirmGeo(lineItem) {
+  var hasGeo = false
+  if (lineItem.lat && lineItem.long || lineItem.polygon) hasGeo = true
+  if (lineItem.latitude && lineItem.longitude || lineItem.polygon) hasGeo = true
+  if (lineItem.geolatitude && lineItem.geolongitude || lineItem.polygon) hasGeo = true
+  return hasGeo
+}
+
+module.exports.handleLatLong = handleLatLong
+function handleLatLong(lineItem) {
+  if (lineItem.latitude && lineItem.longitude || lineItem.polygon) {
+    lineItem.lat = lineItem.latitude
+    lineItem.long = lineItem.longitude
+    delete lineItem.latitude
+    delete lineItem.longitude
+    return lineItem
+  }
+  if (lineItem.geolatitude && lineItem.geolongitude || lineItem.polygon) {
+    lineItem.lat = lineItem.geolatitude
+    lineItem.long = lineItem.geolongitude
+    delete lineItem.geolatitude
+    delete lineItem.geolongitude
+    return lineItem
+  }
+}
+
+module.exports.pointJSON = pointJSON
 function pointJSON(lineItem, type, optionObj) {
   var lowercaseType = type.toLowerCase()
   var pointFeature = {
@@ -10849,7 +10022,7 @@ function templateString(mustacheKeys) {
   return template
 }
 
-module.exports.mustachify = mustachify 
+module.exports.mustachify = mustachify
 function mustachify(array) {
   var newArray = []
   array.forEach(function(item) {
@@ -10887,9 +10060,10 @@ module.exports.addMarkerLayer = function(geoJSON, map, template) {
   })
   return layer
 }
-},{"icanhaz":33,"mapbox.js":35}],33:[function(require,module,exports){
-module.exports=require(31)
-},{}],34:[function(require,module,exports){
+
+},{"icanhaz":7,"mapbox.js":9}],7:[function(require,module,exports){
+module.exports=require(5)
+},{}],8:[function(require,module,exports){
 // Copyright (C) 2010 Google Inc.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -13336,14 +12510,14 @@ if (typeof module !== 'undefined') {
     module.exports = html_sanitize;
 }
 
-},{}],35:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 require('./leaflet');
 require('./mapbox');
 
-},{"./leaflet":36,"./mapbox":37}],36:[function(require,module,exports){
+},{"./leaflet":10,"./mapbox":11}],10:[function(require,module,exports){
 window.L = require('leaflet/dist/leaflet-src');
 
-},{"leaflet/dist/leaflet-src":40}],37:[function(require,module,exports){
+},{"leaflet/dist/leaflet-src":14}],11:[function(require,module,exports){
 // Hardcode image path, because Leaflet's autodetection
 // fails, because mapbox.js is not named leaflet.js
 window.L.Icon.Default.imagePath = '//api.tiles.mapbox.com/mapbox.js/' + 'v' +
@@ -13366,7 +12540,7 @@ L.mapbox = module.exports = {
     template: require('mustache').to_html
 };
 
-},{"./package.json":42,"./src/config":43,"./src/geocoder":44,"./src/geocoder_control":45,"./src/grid_control":47,"./src/grid_layer":48,"./src/legend_control":49,"./src/map":51,"./src/marker":52,"./src/marker_layer":53,"./src/sanitize":55,"./src/share_control":56,"./src/tile_layer":57,"mustache":41}],38:[function(require,module,exports){
+},{"./package.json":16,"./src/config":17,"./src/geocoder":18,"./src/geocoder_control":19,"./src/grid_control":21,"./src/grid_layer":22,"./src/legend_control":23,"./src/map":25,"./src/marker":26,"./src/marker_layer":27,"./src/sanitize":29,"./src/share_control":30,"./src/tile_layer":31,"mustache":15}],12:[function(require,module,exports){
 function xhr(url, callback, cors) {
 
     if (typeof window.XMLHttpRequest === 'undefined') {
@@ -13450,7 +12624,7 @@ function xhr(url, callback, cors) {
 
 if (typeof module !== 'undefined') module.exports = xhr;
 
-},{}],39:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 /*! JSON v3.2.6 | http://bestiejs.github.io/json3 | Copyright 2012-2013, Kit Cambridge | http://kit.mit-license.org */
 ;(function (window) {
   // Convenience aliases.
@@ -14313,7 +13487,7 @@ if (typeof module !== 'undefined') module.exports = xhr;
   }
 }(this));
 
-},{}],40:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /*
  Leaflet, a JavaScript library for mobile-friendly interactive maps. http://leafletjs.com
  (c) 2010-2013, Vladimir Agafonkin
@@ -23178,7 +22352,7 @@ L.Map.include({
 
 
 }(window, document));
-},{}],41:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 /*!
  * mustache.js - Logic-less {{mustache}} templates with JavaScript
  * http://github.com/janl/mustache.js
@@ -23731,7 +22905,7 @@ L.Map.include({
 
 }));
 
-},{}],42:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 module.exports={
   "author": {
     "name": "MapBox"
@@ -23775,10 +22949,14 @@ module.exports={
     "url": "https://github.com/mapbox/mapbox.js/issues"
   },
   "_id": "mapbox.js@1.3.1",
-  "_from": "mapbox.js@~1.3.1"
+  "dist": {
+    "shasum": "a6d144286157eecf7273b202782b31a695450f6a"
+  },
+  "_from": "mapbox.js@~1.3.1",
+  "_resolved": "https://registry.npmjs.org/mapbox.js/-/mapbox.js-1.3.1.tgz"
 }
 
-},{}],43:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -23798,7 +22976,7 @@ module.exports = {
         'https://d.tiles.mapbox.com/v3/']
 };
 
-},{}],44:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -23890,7 +23068,7 @@ module.exports = function(_) {
     return geocoder;
 };
 
-},{"./request":54,"./url":58,"./util":59}],45:[function(require,module,exports){
+},{"./request":28,"./url":32,"./util":33}],19:[function(require,module,exports){
 'use strict';
 
 var geocoder = require('./geocoder');
@@ -24023,7 +23201,7 @@ module.exports = function(options) {
     return new GeocoderControl(options);
 };
 
-},{"./geocoder":44}],46:[function(require,module,exports){
+},{"./geocoder":18}],20:[function(require,module,exports){
 'use strict';
 
 function utfDecode(c) {
@@ -24041,7 +23219,7 @@ module.exports = function(data) {
     };
 };
 
-},{}],47:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -24235,7 +23413,7 @@ module.exports = function(_, options) {
     return new GridControl(_, options);
 };
 
-},{"./sanitize":55,"./util":59,"mustache":41}],48:[function(require,module,exports){
+},{"./sanitize":29,"./util":33,"mustache":15}],22:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -24463,7 +23641,7 @@ module.exports = function(_, options) {
     return new GridLayer(_, options);
 };
 
-},{"./grid":46,"./load_tilejson":50,"./request":54,"./url":58,"./util":59}],49:[function(require,module,exports){
+},{"./grid":20,"./load_tilejson":24,"./request":28,"./url":32,"./util":33}],23:[function(require,module,exports){
 'use strict';
 
 var LegendControl = L.Control.extend({
@@ -24531,7 +23709,7 @@ module.exports = function(options) {
     return new LegendControl(options);
 };
 
-},{"./sanitize":55}],50:[function(require,module,exports){
+},{"./sanitize":29}],24:[function(require,module,exports){
 'use strict';
 
 var request = require('./request'),
@@ -24560,7 +23738,7 @@ module.exports = {
     }
 };
 
-},{"./request":54,"./url":58,"./util":59}],51:[function(require,module,exports){
+},{"./request":28,"./url":32,"./util":33}],25:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -24682,7 +23860,7 @@ module.exports = function(element, _, options) {
     return new Map(element, _, options);
 };
 
-},{"./grid_control":47,"./grid_layer":48,"./legend_control":49,"./load_tilejson":50,"./marker_layer":53,"./tile_layer":57,"./util":59}],52:[function(require,module,exports){
+},{"./grid_control":21,"./grid_layer":22,"./legend_control":23,"./load_tilejson":24,"./marker_layer":27,"./tile_layer":31,"./util":33}],26:[function(require,module,exports){
 'use strict';
 
 var url = require('./url'),
@@ -24745,7 +23923,7 @@ module.exports = {
     createPopup: createPopup
 };
 
-},{"./sanitize":55,"./url":58}],53:[function(require,module,exports){
+},{"./sanitize":29,"./url":32}],27:[function(require,module,exports){
 'use strict';
 
 var util = require('./util');
@@ -24850,7 +24028,7 @@ module.exports = function(_, options) {
     return new MarkerLayer(_, options);
 };
 
-},{"./marker":52,"./request":54,"./sanitize":55,"./url":58,"./util":59}],54:[function(require,module,exports){
+},{"./marker":26,"./request":28,"./sanitize":29,"./url":32,"./util":33}],28:[function(require,module,exports){
 'use strict';
 
 var corslite = require('corslite'),
@@ -24874,7 +24052,7 @@ module.exports = function(url, callback) {
     });
 };
 
-},{"./util":59,"corslite":38,"json3":39}],55:[function(require,module,exports){
+},{"./util":33,"corslite":12,"json3":13}],29:[function(require,module,exports){
 'use strict';
 
 var html_sanitize = require('../ext/sanitizer/html-sanitizer-bundle.js');
@@ -24896,7 +24074,7 @@ module.exports = function(_) {
     return html_sanitize(_, cleanUrl, cleanId);
 };
 
-},{"../ext/sanitizer/html-sanitizer-bundle.js":34}],56:[function(require,module,exports){
+},{"../ext/sanitizer/html-sanitizer-bundle.js":8}],30:[function(require,module,exports){
 'use strict';
 
 var ShareControl = L.Control.extend({
@@ -24995,7 +24173,7 @@ module.exports = function(_, options) {
     return new ShareControl(_, options);
 };
 
-},{"./load_tilejson":50}],57:[function(require,module,exports){
+},{"./load_tilejson":24}],31:[function(require,module,exports){
 'use strict';
 
 var util = require('./util'),
@@ -25089,7 +24267,7 @@ module.exports = function(_, options) {
     return new TileLayer(_, options);
 };
 
-},{"./load_tilejson":50,"./url":58,"./util":59}],58:[function(require,module,exports){
+},{"./load_tilejson":24,"./url":32,"./util":33}],32:[function(require,module,exports){
 'use strict';
 
 var config = require('./config');
@@ -25128,7 +24306,7 @@ module.exports = {
     }
 };
 
-},{"./config":43}],59:[function(require,module,exports){
+},{"./config":17}],33:[function(require,module,exports){
 'use strict';
 
 module.exports = {
@@ -25163,7 +24341,7 @@ module.exports = {
     }
 };
 
-},{}],60:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 var ich = require('icanhaz')
 
 module.exports.initiateTableFilter = function(opts) {
@@ -25343,7 +24521,860 @@ function table(data, targetDiv) {
   })
   $(targetDiv).html(tableContents)
 }
-},{"icanhaz":61}],61:[function(require,module,exports){
-module.exports=require(31)
-},{}]},{},[1])
+},{"icanhaz":35}],35:[function(require,module,exports){
+module.exports=require(5)
+},{}],36:[function(require,module,exports){
+if (typeof window.Sheetsee === 'undefined') window.Sheetsee = {}; window.Sheetsee = require('sheetsee-core'); var extend = require('lodash.assign'); extend(window.Sheetsee, require('sheetsee-tables'), require('sheetsee-maps'), require('sheetsee-charts')); module.exports = Sheetsee;
+},{"lodash.assign":37,"sheetsee-charts":1,"sheetsee-core":4,"sheetsee-maps":6,"sheetsee-tables":34}],37:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var baseCreateCallback = require('lodash._basecreatecallback'),
+    keys = require('lodash.keys'),
+    objectTypes = require('lodash._objecttypes');
+
+/**
+ * Assigns own enumerable properties of source object(s) to the destination
+ * object. Subsequent sources will overwrite property assignments of previous
+ * sources. If a callback is provided it will be executed to produce the
+ * assigned values. The callback is bound to `thisArg` and invoked with two
+ * arguments; (objectValue, sourceValue).
+ *
+ * @static
+ * @memberOf _
+ * @type Function
+ * @alias extend
+ * @category Objects
+ * @param {Object} object The destination object.
+ * @param {...Object} [source] The source objects.
+ * @param {Function} [callback] The function to customize assigning values.
+ * @param {*} [thisArg] The `this` binding of `callback`.
+ * @returns {Object} Returns the destination object.
+ * @example
+ *
+ * _.assign({ 'name': 'moe' }, { 'age': 40 });
+ * // => { 'name': 'moe', 'age': 40 }
+ *
+ * var defaults = _.partialRight(_.assign, function(a, b) {
+ *   return typeof a == 'undefined' ? b : a;
+ * });
+ *
+ * var food = { 'name': 'apple' };
+ * defaults(food, { 'name': 'banana', 'type': 'fruit' });
+ * // => { 'name': 'apple', 'type': 'fruit' }
+ */
+var assign = function(object, source, guard) {
+  var index, iterable = object, result = iterable;
+  if (!iterable) return result;
+  var args = arguments,
+      argsIndex = 0,
+      argsLength = typeof guard == 'number' ? 2 : args.length;
+  if (argsLength > 3 && typeof args[argsLength - 2] == 'function') {
+    var callback = baseCreateCallback(args[--argsLength - 1], args[argsLength--], 2);
+  } else if (argsLength > 2 && typeof args[argsLength - 1] == 'function') {
+    callback = args[--argsLength];
+  }
+  while (++argsIndex < argsLength) {
+    iterable = args[argsIndex];
+    if (iterable && objectTypes[typeof iterable]) {
+    var ownIndex = -1,
+        ownProps = objectTypes[typeof iterable] && keys(iterable),
+        length = ownProps ? ownProps.length : 0;
+
+    while (++ownIndex < length) {
+      index = ownProps[ownIndex];
+      result[index] = callback ? callback(result[index], iterable[index]) : iterable[index];
+    }
+    }
+  }
+  return result
+};
+
+module.exports = assign;
+
+},{"lodash._basecreatecallback":38,"lodash._objecttypes":57,"lodash.keys":58}],38:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var bind = require('lodash.bind'),
+    identity = require('lodash.identity'),
+    setBindData = require('lodash._setbinddata'),
+    support = require('lodash.support');
+
+/** Used to detected named functions */
+var reFuncName = /^function[ \n\r\t]+\w/;
+
+/** Used to detect functions containing a `this` reference */
+var reThis = /\bthis\b/;
+
+/** Native method shortcuts */
+var fnToString = Function.prototype.toString;
+
+/**
+ * The base implementation of `_.createCallback` without support for creating
+ * "_.pluck" or "_.where" style callbacks.
+ *
+ * @private
+ * @param {*} [func=identity] The value to convert to a callback.
+ * @param {*} [thisArg] The `this` binding of the created callback.
+ * @param {number} [argCount] The number of arguments the callback accepts.
+ * @returns {Function} Returns a callback function.
+ */
+function baseCreateCallback(func, thisArg, argCount) {
+  if (typeof func != 'function') {
+    return identity;
+  }
+  // exit early if there is no `thisArg`
+  if (typeof thisArg == 'undefined') {
+    return func;
+  }
+  var bindData = func.__bindData__ || (support.funcNames && !func.name);
+  if (typeof bindData == 'undefined') {
+    var source = reThis && fnToString.call(func);
+    if (!support.funcNames && source && !reFuncName.test(source)) {
+      bindData = true;
+    }
+    if (support.funcNames || !bindData) {
+      // checks if `func` references the `this` keyword and stores the result
+      bindData = !support.funcDecomp || reThis.test(source);
+      setBindData(func, bindData);
+    }
+  }
+  // exit early if there are no `this` references or `func` is bound
+  if (bindData !== true && (bindData && bindData[1] & 1)) {
+    return func;
+  }
+  switch (argCount) {
+    case 1: return function(value) {
+      return func.call(thisArg, value);
+    };
+    case 2: return function(a, b) {
+      return func.call(thisArg, a, b);
+    };
+    case 3: return function(value, index, collection) {
+      return func.call(thisArg, value, index, collection);
+    };
+    case 4: return function(accumulator, value, index, collection) {
+      return func.call(thisArg, accumulator, value, index, collection);
+    };
+  }
+  return bind(func, thisArg);
+}
+
+module.exports = baseCreateCallback;
+
+},{"lodash._setbinddata":39,"lodash.bind":47,"lodash.identity":54,"lodash.support":55}],39:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var getObject = require('lodash._getobject'),
+    noop = require('lodash._noop'),
+    reNative = require('lodash._renative'),
+    releaseObject = require('lodash._releaseobject');
+
+/** Used for native method references */
+var objectProto = Object.prototype;
+
+var defineProperty = (function() {
+  try {
+    var o = {},
+        func = reNative.test(func = Object.defineProperty) && func,
+        result = func(o, o, o) && func;
+  } catch(e) { }
+  return result;
+}());
+
+/**
+ * Sets `this` binding data on a given function.
+ *
+ * @private
+ * @param {Function} func The function to set data on.
+ * @param {*} value The value to set.
+ */
+var setBindData = !defineProperty ? noop : function(func, value) {
+  var descriptor = getObject();
+  descriptor.value = value;
+  defineProperty(func, '__bindData__', descriptor);
+  releaseObject(descriptor);
+};
+
+module.exports = setBindData;
+
+},{"lodash._getobject":40,"lodash._noop":42,"lodash._releaseobject":43,"lodash._renative":46}],40:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var objectPool = require('lodash._objectpool');
+
+/**
+ * Gets an object from the object pool or creates a new one if the pool is empty.
+ *
+ * @private
+ * @returns {Object} The object from the pool.
+ */
+function getObject() {
+  return objectPool.pop() || {
+    'array': null,
+    'cache': null,
+    'configurable': false,
+    'criteria': null,
+    'enumerable': false,
+    'false': false,
+    'index': 0,
+    'leading': false,
+    'maxWait': 0,
+    'null': false,
+    'number': null,
+    'object': null,
+    'push': null,
+    'string': null,
+    'trailing': false,
+    'true': false,
+    'undefined': false,
+    'value': null,
+    'writable': false
+  };
+}
+
+module.exports = getObject;
+
+},{"lodash._objectpool":41}],41:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+
+/** Used to pool arrays and objects used internally */
+var objectPool = [];
+
+module.exports = objectPool;
+
+},{}],42:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+
+/**
+ * A no-operation function.
+ *
+ * @private
+ */
+function noop() {
+  // no operation performed
+}
+
+module.exports = noop;
+
+},{}],43:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var maxPoolSize = require('lodash._maxpoolsize'),
+    objectPool = require('lodash._objectpool');
+
+/**
+ * Releases the given object back to the object pool.
+ *
+ * @private
+ * @param {Object} [object] The object to release.
+ */
+function releaseObject(object) {
+  var cache = object.cache;
+  if (cache) {
+    releaseObject(cache);
+  }
+  object.array = object.cache = object.criteria = object.object = object.number = object.string = object.value = null;
+  if (objectPool.length < maxPoolSize) {
+    objectPool.push(object);
+  }
+}
+
+module.exports = releaseObject;
+
+},{"lodash._maxpoolsize":44,"lodash._objectpool":45}],44:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+
+/** Used as the max size of the `arrayPool` and `objectPool` */
+var maxPoolSize = 40;
+
+module.exports = maxPoolSize;
+
+},{}],45:[function(require,module,exports){
+module.exports=require(41)
+},{}],46:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+
+/** Used for native method references */
+var objectProto = Object.prototype;
+
+/** Used to detect if a method is native */
+var reNative = RegExp('^' +
+  String(objectProto.valueOf)
+    .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    .replace(/valueOf|for [^\]]+/g, '.+?') + '$'
+);
+
+module.exports = reNative;
+
+},{}],47:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var createBound = require('lodash._createbound'),
+    reNative = require('lodash._renative');
+
+/**
+ * Used for `Array` method references.
+ *
+ * Normally `Array.prototype` would suffice, however, using an array literal
+ * avoids issues in Narwhal.
+ */
+var arrayRef = [];
+
+/* Native method shortcuts for methods with the same name as other `lodash` methods */
+var nativeSlice = arrayRef.slice;
+
+/**
+ * Creates a function that, when called, invokes `func` with the `this`
+ * binding of `thisArg` and prepends any additional `bind` arguments to those
+ * provided to the bound function.
+ *
+ * @static
+ * @memberOf _
+ * @category Functions
+ * @param {Function} func The function to bind.
+ * @param {*} [thisArg] The `this` binding of `func`.
+ * @param {...*} [arg] Arguments to be partially applied.
+ * @returns {Function} Returns the new bound function.
+ * @example
+ *
+ * var func = function(greeting) {
+ *   return greeting + ' ' + this.name;
+ * };
+ *
+ * func = _.bind(func, { 'name': 'moe' }, 'hi');
+ * func();
+ * // => 'hi moe'
+ */
+function bind(func, thisArg) {
+  return arguments.length > 2
+    ? createBound(func, 17, nativeSlice.call(arguments, 2), null, thisArg)
+    : createBound(func, 1, null, null, thisArg);
+}
+
+module.exports = bind;
+
+},{"lodash._createbound":48,"lodash._renative":53}],48:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var createObject = require('lodash._createobject'),
+    isFunction = require('lodash.isfunction'),
+    isObject = require('lodash.isobject'),
+    reNative = require('lodash._renative'),
+    setBindData = require('lodash._setbinddata'),
+    support = require('lodash.support');
+
+/**
+ * Used for `Array` method references.
+ *
+ * Normally `Array.prototype` would suffice, however, using an array literal
+ * avoids issues in Narwhal.
+ */
+var arrayRef = [];
+
+/** Used for native method references */
+var objectProto = Object.prototype;
+
+/** Native method shortcuts */
+var push = arrayRef.push,
+    toString = objectProto.toString,
+    unshift = arrayRef.unshift;
+
+/* Native method shortcuts for methods with the same name as other `lodash` methods */
+var nativeBind = reNative.test(nativeBind = toString.bind) && nativeBind,
+    nativeSlice = arrayRef.slice;
+
+/**
+ * Creates a function that, when called, either curries or invokes `func`
+ * with an optional `this` binding and partially applied arguments.
+ *
+ * @private
+ * @param {Function|string} func The function or method name to reference.
+ * @param {number} bitmask The bitmask of method flags to compose.
+ *  The bitmask may be composed of the following flags:
+ *  1 - `_.bind`
+ *  2 - `_.bindKey`
+ *  4 - `_.curry`
+ *  8 - `_.curry` (bound)
+ *  16 - `_.partial`
+ *  32 - `_.partialRight`
+ * @param {Array} [partialArgs] An array of arguments to prepend to those
+ *  provided to the new function.
+ * @param {Array} [partialRightArgs] An array of arguments to append to those
+ *  provided to the new function.
+ * @param {*} [thisArg] The `this` binding of `func`.
+ * @param {number} [arity] The arity of `func`.
+ * @returns {Function} Returns the new bound function.
+ */
+function createBound(func, bitmask, partialArgs, partialRightArgs, thisArg, arity) {
+  var isBind = bitmask & 1,
+      isBindKey = bitmask & 2,
+      isCurry = bitmask & 4,
+      isCurryBound = bitmask & 8,
+      isPartial = bitmask & 16,
+      isPartialRight = bitmask & 32,
+      key = func;
+
+  if (!isBindKey && !isFunction(func)) {
+    throw new TypeError;
+  }
+  if (isPartial && !partialArgs.length) {
+    bitmask &= ~16;
+    isPartial = partialArgs = false;
+  }
+  if (isPartialRight && !partialRightArgs.length) {
+    bitmask &= ~32;
+    isPartialRight = partialRightArgs = false;
+  }
+  var bindData = func && func.__bindData__;
+  if (bindData) {
+    if (isBind && !(bindData[1] & 1)) {
+      bindData[4] = thisArg;
+    }
+    if (!isBind && bindData[1] & 1) {
+      bitmask |= 8;
+    }
+    if (isCurry && !(bindData[1] & 4)) {
+      bindData[5] = arity;
+    }
+    if (isPartial) {
+      push.apply(bindData[2] || (bindData[2] = []), partialArgs);
+    }
+    if (isPartialRight) {
+      push.apply(bindData[3] || (bindData[3] = []), partialRightArgs);
+    }
+    bindData[1] |= bitmask;
+    return createBound.apply(null, bindData);
+  }
+  // use `Function#bind` if it exists and is fast
+  // (in V8 `Function#bind` is slower except when partially applied)
+  if (isBind && !(isBindKey || isCurry || isPartialRight) &&
+      (support.fastBind || (nativeBind && isPartial))) {
+    if (isPartial) {
+      var args = [thisArg];
+      push.apply(args, partialArgs);
+    }
+    var bound = isPartial
+      ? nativeBind.apply(func, args)
+      : nativeBind.call(func, thisArg);
+  }
+  else {
+    bound = function() {
+      // `Function#bind` spec
+      // http://es5.github.io/#x15.3.4.5
+      var args = arguments,
+          thisBinding = isBind ? thisArg : this;
+
+      if (isCurry || isPartial || isPartialRight) {
+        args = nativeSlice.call(args);
+        if (isPartial) {
+          unshift.apply(args, partialArgs);
+        }
+        if (isPartialRight) {
+          push.apply(args, partialRightArgs);
+        }
+        if (isCurry && args.length < arity) {
+          bitmask |= 16 & ~32;
+          return createBound(func, (isCurryBound ? bitmask : bitmask & ~3), args, null, thisArg, arity);
+        }
+      }
+      if (isBindKey) {
+        func = thisBinding[key];
+      }
+      if (this instanceof bound) {
+        // ensure `new bound` is an instance of `func`
+        thisBinding = createObject(func.prototype);
+
+        // mimic the constructor's `return` behavior
+        // http://es5.github.io/#x13.2.2
+        var result = func.apply(thisBinding, args);
+        return isObject(result) ? result : thisBinding;
+      }
+      return func.apply(thisBinding, args);
+    };
+  }
+  setBindData(bound, nativeSlice.call(arguments));
+  return bound;
+}
+
+module.exports = createBound;
+
+},{"lodash._createobject":49,"lodash._renative":53,"lodash._setbinddata":39,"lodash.isfunction":51,"lodash.isobject":52,"lodash.support":55}],49:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var isObject = require('lodash.isobject'),
+    noop = require('lodash._noop'),
+    reNative = require('lodash._renative');
+
+/** Used for native method references */
+var objectProto = Object.prototype;
+
+/* Native method shortcuts for methods with the same name as other `lodash` methods */
+var nativeCreate = reNative.test(nativeCreate = Object.create) && nativeCreate;
+
+/**
+ * Creates a new object with the specified `prototype`.
+ *
+ * @private
+ * @param {Object} prototype The prototype object.
+ * @returns {Object} Returns the new object.
+ */
+function createObject(prototype) {
+  return isObject(prototype) ? nativeCreate(prototype) : {};
+}
+
+module.exports = createObject;
+
+},{"lodash._noop":50,"lodash._renative":53,"lodash.isobject":52}],50:[function(require,module,exports){
+module.exports=require(42)
+},{}],51:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+
+/**
+ * Checks if `value` is a function.
+ *
+ * @static
+ * @memberOf _
+ * @category Objects
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if the `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ */
+function isFunction(value) {
+  return typeof value == 'function';
+}
+
+module.exports = isFunction;
+
+},{}],52:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var objectTypes = require('lodash._objecttypes');
+
+/**
+ * Checks if `value` is the language type of Object.
+ * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
+ *
+ * @static
+ * @memberOf _
+ * @category Objects
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if the `value` is an object, else `false`.
+ * @example
+ *
+ * _.isObject({});
+ * // => true
+ *
+ * _.isObject([1, 2, 3]);
+ * // => true
+ *
+ * _.isObject(1);
+ * // => false
+ */
+function isObject(value) {
+  // check if the value is the ECMAScript language type of Object
+  // http://es5.github.io/#x8
+  // and avoid a V8 bug
+  // http://code.google.com/p/v8/issues/detail?id=2291
+  return !!(value && objectTypes[typeof value]);
+}
+
+module.exports = isObject;
+
+},{"lodash._objecttypes":57}],53:[function(require,module,exports){
+module.exports=require(46)
+},{}],54:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+
+/**
+ * This method returns the first argument provided to it.
+ *
+ * @static
+ * @memberOf _
+ * @category Utilities
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
+ * @example
+ *
+ * var moe = { 'name': 'moe' };
+ * moe === _.identity(moe);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+
+module.exports = identity;
+
+},{}],55:[function(require,module,exports){
+var global=typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var reNative = require('lodash._renative');
+
+/** Used to detect functions containing a `this` reference */
+var reThis = /\bthis\b/;
+
+/** Used for native method references */
+var objectProto = Object.prototype;
+
+/** Native method shortcuts */
+var toString = objectProto.toString;
+
+/* Native method shortcuts for methods with the same name as other `lodash` methods */
+var nativeBind = reNative.test(nativeBind = toString.bind) && nativeBind;
+
+/** Detect various environments */
+var isIeOpera = reNative.test(global.attachEvent),
+    isV8 = nativeBind && !/\n|true/.test(nativeBind + isIeOpera);
+
+/**
+ * An object used to flag environments features.
+ *
+ * @static
+ * @memberOf _
+ * @type Object
+ */
+var support = {};
+
+/**
+ * Detect if `Function#bind` exists and is inferred to be fast (all but V8).
+ *
+ * @memberOf _.support
+ * @type boolean
+ */
+support.fastBind = nativeBind && !isV8;
+
+/**
+ * Detect if functions can be decompiled by `Function#toString`
+ * (all but PS3 and older Opera mobile browsers & avoided in Windows 8 apps).
+ *
+ * @memberOf _.support
+ * @type boolean
+ */
+support.funcDecomp = !reNative.test(global.WinRTError) && reThis.test(function() { return this; });
+
+/**
+ * Detect if `Function#name` is supported (all but IE).
+ *
+ * @memberOf _.support
+ * @type boolean
+ */
+support.funcNames = typeof Function.name == 'string';
+
+module.exports = support;
+
+},{"lodash._renative":56}],56:[function(require,module,exports){
+module.exports=require(46)
+},{}],57:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+
+/** Used to determine if values are of the language type Object */
+var objectTypes = {
+  'boolean': false,
+  'function': true,
+  'object': true,
+  'number': false,
+  'string': false,
+  'undefined': false
+};
+
+module.exports = objectTypes;
+
+},{}],58:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var isObject = require('lodash.isobject'),
+    reNative = require('lodash._renative'),
+    shimKeys = require('lodash._shimkeys');
+
+/** Used for native method references */
+var objectProto = Object.prototype;
+
+/* Native method shortcuts for methods with the same name as other `lodash` methods */
+var nativeKeys = reNative.test(nativeKeys = Object.keys) && nativeKeys;
+
+/**
+ * Creates an array composed of the own enumerable property names of an object.
+ *
+ * @static
+ * @memberOf _
+ * @category Objects
+ * @param {Object} object The object to inspect.
+ * @returns {Array} Returns an array of property names.
+ * @example
+ *
+ * _.keys({ 'one': 1, 'two': 2, 'three': 3 });
+ * // => ['one', 'two', 'three'] (property order is not guaranteed across environments)
+ */
+var keys = !nativeKeys ? shimKeys : function(object) {
+  if (!isObject(object)) {
+    return [];
+  }
+  return nativeKeys(object);
+};
+
+module.exports = keys;
+
+},{"lodash._renative":59,"lodash._shimkeys":60,"lodash.isobject":61}],59:[function(require,module,exports){
+module.exports=require(46)
+},{}],60:[function(require,module,exports){
+/**
+ * Lo-Dash 2.1.0 (Custom Build) <http://lodash.com/>
+ * Build: `lodash modularize modern exports="npm" -o ./npm`
+ * Copyright 2012-2013 The Dojo Foundation <http://dojofoundation.org/>
+ * Based on Underscore.js 1.5.2 <http://underscorejs.org/LICENSE>
+ * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
+ * Available under MIT license <http://lodash.com/license>
+ */
+var objectTypes = require('lodash._objecttypes');
+
+/** Used for native method references */
+var objectProto = Object.prototype;
+
+/** Native method shortcuts */
+var hasOwnProperty = objectProto.hasOwnProperty;
+
+/**
+ * A fallback implementation of `Object.keys` which produces an array of the
+ * given object's own enumerable property names.
+ *
+ * @private
+ * @type Function
+ * @param {Object} object The object to inspect.
+ * @returns {Array} Returns an array of property names.
+ */
+var shimKeys = function(object) {
+  var index, iterable = object, result = [];
+  if (!iterable) return result;
+  if (!(objectTypes[typeof object])) return result;
+    for (index in iterable) {
+      if (hasOwnProperty.call(iterable, index)) {
+        result.push(index);
+      }
+    }
+  return result
+};
+
+module.exports = shimKeys;
+
+},{"lodash._objecttypes":57}],61:[function(require,module,exports){
+module.exports=require(52)
+},{"lodash._objecttypes":57}]},{},[36])
 ;

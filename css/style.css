@@ -73,6 +73,9 @@ td {
   padding: 3px;
   height: 23px;
   margin-bottom: 1px;
+  max-width: 184px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .day {
@@ -94,6 +97,10 @@ td {
   margin-left: -12px;
   top: 0;
   border: 0 !important;
+}
+
+.past a {
+  opacity: 0.6;
 }
 
 .days td:hover .day:before {
@@ -122,33 +129,3 @@ td {
 .multi-days a:hover { color: #000; }
 
 .no-event { color: #aaa; }
-
-/* Map */
-
-#map { 
-  margin: 40px 60px;
-  height: 350px;
-  background-color: #777;
-}
-
-.leaflet-popup-content {
-  white-space: nowrap;
-  padding: 3px;
-  height: 23px;
-  margin-bottom: 1px;
-  color: #333333;
-  font-size: 12px;
-  font-family: 'Libre Baskerville', 'Baskerville', Georgia, serif;
-  text-align: center;
-}
-
-.leaflet-popup-content a {
-  color: #333333;
-  text-decoration: none;
-  padding-bottom: 0px;
-  border-bottom: 2px #CCF4FF solid;
-}
-
-.leaflet-popup-content a:hover {
-  color: #47CCFC;
-}

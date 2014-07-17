@@ -1,6 +1,7 @@
 # Sheetsee Calendar
 
-A fork-n-go Sheetsee.js calendar project!
+A fork-n-go Sheetsee.js calendar project! Made by me and [@muan](http://www.github.com/muan), we finally worked on something together! :tada:
+
 
 ![ss-cal](ss-cal.png)
 
@@ -10,7 +11,7 @@ Sheetsee.js is a library that makes it easy to visualze data from a Google Sprea
 
 **Fork-n-go**
 
-This repository contains webfiles on a branch named `gh-pages`, which means GitHub hosts them for free at: [jlord.github.io/sheetsee-calendar](jlord.github.io/sheetsee-calendar). When you fork the project to your account, you too can have a hosted site -- easy peasy!
+This repository contains webfiles on a branch named `gh-pages`, which means GitHub hosts them for free at: [jlord.github.io/sheetsee-calendar](http://jlord.github.io/sheetsee-calendar). When you fork the project to your account, you too can have a hosted site -- easy peasy!
 
 ## Set Up
 
@@ -74,3 +75,10 @@ Included in this repository is a stylesheet for the calendar. You can keep the s
 | Include a Map | Map Documentation |
 | ------------- | ----------------- |
 | ![map](with-map.png) | If you want to include a map, you can do so! There is a map version on the `with-map` [branch](https://github.com/jlord/sheetsee-calendar/tree/with-map). Read `map-doc.md` for [instructions](https://github.com/jlord/sheetsee-calendar/blob/with-map/map-doc.md). |
+
+
+## Use cases
+
+1. http://calendar.codebar.io/
+2. http://findyourfitwichita.com/bike
+
