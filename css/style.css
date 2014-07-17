@@ -73,6 +73,9 @@ td {
   padding: 3px;
   height: 23px;
   margin-bottom: 1px;
+  max-width: 184px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .day {
@@ -125,7 +128,7 @@ td {
 
 /* Map */
 
-#map { 
+#map {
   margin: 40px 60px;
   height: 350px;
   background-color: #777;
@@ -152,3 +155,7 @@ td {
 .leaflet-popup-content a:hover {
   color: #47CCFC;
 }
+
+/*#calendar-goes-here {
+  margin: 40px 60px;
+}*/

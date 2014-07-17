@@ -4,23 +4,26 @@
     <link rel='stylesheet' type='text/css' href='http://fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic'>
     <meta charset="utf-8">
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
-    <script type="text/javascript" src="js/tabletop.js"></script>
+    <script type="text/javascript" src="js/tabletop1.3.4.js"></script>
     <script type="text/javascript" src='js/sheetsee.js'></script>
+    <script type="text/javascript" src='js/leaflet.markercluster.js'></script>
     <script type="text/javascript" src='js/table.js'></script>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" type="text/css" href="css/mapbox.css">
+    <link rel="stylesheet" href="css/MarkerCluster.css" />
+    <link rel="stylesheet" href="css/MarkerCluster.Default.css" />
   </head>
   <body>
 
-  <h1>NodeSchool Events</h1>
+  <h1>Calendar of Events - WWC</h1>
   <div id="map"></div>
   <div id="calendar-goes-here"></div>
-  <small>Add events to this <a href="https://docs.google.com/a/github.com/spreadsheet/ccc?key=0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE#gid=0&output=json" target="_blank">spreadsheet</a>. Visit the GitHub <a href="http://www.github.com/jlord/sheetsee-calendar">repository</a>.</small>
+  <small>Add events to this <a href="https://docs.google.com/spreadsheets/d/1h1AF5cmX4mDl79JI9u4qP4aaac3Sgl6PYUS5pVu64RI/edit?usp=sharing" target="_blank">spreadsheet</a>. Visit the GitHub <a href="http://www.github.com/alysonla/wwc-calendar" target="_blank">repository</a>.</small>
 
   </body>
     <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
-      var URL = "0AuOjlXjUrSbAdE1XRFJkeEJZQ1NSelhILUR0NXdBWUE"
+      var URL = "1h1AF5cmX4mDl79JI9u4qP4aaac3Sgl6PYUS5pVu64RI"
       Tabletop.init( { key: URL, callback: makeThings, simpleSheet: true } )
 
       function makeThings(data) {
@@ -34,7 +37,7 @@
           + " target='_blank'>{{name}}</a><p>"
         var geoJSON = Sheetsee.createGeoJSON(data, optionsJSON)
         var map = Sheetsee.loadMap("map")
-        Sheetsee.addTileLayer(map, 'examples.map-9ijuk24y')
+        Sheetsee.addTileLayer(map, 'examples.map-i86nkdio')
         var markerLayer = Sheetsee.addMarkerLayer(geoJSON, map, template)
       }
     })

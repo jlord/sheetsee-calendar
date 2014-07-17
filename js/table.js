@@ -28,7 +28,13 @@ function addMonthMenu() {
     e.preventDefault()
   })
 
-  $('[data-target]').first().click()
+  // Get current month and click it
+  currentMonth = $('[data-target=' + monthNames[(new Date()).getMonth()] + ']')
+  if( currentMonth.length ) {
+    currentMonth.click()
+  } else {
+    $('[data-target]').first().click()
+  }
 }
 
 function appendEvent( event ) {
@@ -82,6 +88,8 @@ function generateMonthTable( date ) {
   eventMonthName = monthNames[date.getMonth()]
   monthTable     = $('<table cellspacing=0 class="month-table" data-month="' + eventMonthName + '" id="month-' + date.getMonth() + '"></table>')
   monthTableBody = monthTable.append('<tbody>')
+  today          = new Date()
+  endOfToday     = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 00, 00, 00)
   firstDay       = new Date(date.getFullYear(), date.getMonth(), 1)
   numberOfDays   = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate()
   weekDayNumber  = firstDay.getDay()
@@ -97,7 +105,8 @@ function generateMonthTable( date ) {
   })
 
   // Add empty days from previous month
-  loopForTimes( weekDayNumber - 1, function() {
+  times = weekDayNumber == 0 ? 6 : weekDayNumber - 1
+  loopForTimes( times, function() {
     getFirstAvailableRow(monthTable).append('<td class="empty"></td>')
   })
 
@@ -105,7 +114,8 @@ function generateMonthTable( date ) {
   loopForTimes( numberOfDays, function(daynumber) {
     thisDay = new Date(date.getFullYear(), date.getMonth(), (daynumber + 1))
     id = formattedDate(thisDay)
-    getFirstAvailableRow(monthTableBody).append('<td class="no-event" id=' + id + '><div class=day>'+ (daynumber + 1) +'</div></td>')
+    pastClass = endOfToday > thisDay ? "past" : ""
+    getFirstAvailableRow(monthTableBody).append('<td class="no-event ' + pastClass + '" id=' + id + '><div class=day>'+ (daynumber + 1) +'</div></td>')
   })
 
   // Add empty days from next month
