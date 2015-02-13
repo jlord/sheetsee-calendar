@@ -18,7 +18,7 @@ function generateCalendar (eventData) {
 function addMonthMenu() {
   $('#calendar-goes-here').prepend('<div id="cal-controls">')
   $('.month-table').each(function(_, table) {
-    month = $(table).data('month')
+    var month = $(table).data('month')
     $('#cal-controls').append('<a class="month-menuitem" data-target="' + month + '" href="#' + month + '">' + month + '</a>')
   })
 
@@ -30,7 +30,7 @@ function addMonthMenu() {
   })
 
   // Get current month and click it
-  var currentMonth = $('[data-target=' + monthNames[(new Date()).getMonth()] + ']')
+  var currentMonth = $('[data-target=' + (new Date()).getFullYear() + "-"  + monthNames[(new Date()).getMonth()] + ']')
   if( currentMonth.length ) {
     currentMonth.click()
   } else {
@@ -83,16 +83,17 @@ function generateAllTheMonths( eventData ) {
 
   dates.forEach(function (date) {
     date = new Date(date)
-    if(months.indexOf(date.getMonth()) < 0) {
-      months.push(date.getMonth())
+    if(months.indexOf(date.getFullYear().toString() + date.getMonth()) < 0) {
+      months.push(date.getFullYear().toString() + date.getMonth())
       generateMonthTable(date)
+    } else {
     }
   })
 }
 
 function generateMonthTable( date ) {
   var eventMonthName = monthNames[date.getMonth()]
-  var monthTable     = $('<table cellspacing=0 class="month-table" data-month="' + eventMonthName + '" id="month-' + date.getMonth() + '"></table>')
+  var monthTable     = $('<table cellspacing=0 class="month-table" data-month="' + date.getFullYear() + "-"  + eventMonthName + '" id="month-' + date.getMonth() + '"></table>')
   var monthTableBody = monthTable.append('<tbody>')
   // var today          = new Date()
   var endOfToday     = new Date(today.getFullYear(), today.getMonth(), today.getDate(), 00, 00, 00)
@@ -101,7 +102,7 @@ function generateMonthTable( date ) {
   var weekDayNumber  = firstDay.getDay()
 
   $('#calendar-goes-here').append(monthTable)
-  monthTable.before('<h2 data-month="' + eventMonthName + '">' + eventMonthName + ' ' + date.getFullYear() + '</h2>')
+  monthTable.before('<h2 data-month="' + date.getFullYear() + '-' + eventMonthName + '">' + eventMonthName + ' ' + date.getFullYear() + '</h2>')
 
   // Add month calendar header
   monthTableBody.append('<tr class="header"></tr>')
@@ -157,5 +158,5 @@ function getFirstAvailableRow( table ) {
 
 // Create an unique date string for cell lookup
 function formattedDate( date ) {
-  return monthNames[date.getMonth()] + '-' + date.getDate()
+  return date.getFullYear() + '-' + monthNames[date.getMonth()] + '-' + date.getDate()
 }
